@@ -16,34 +16,25 @@
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center;
-            /* Garantili kapanma animasyonu */
-            animation: fadeOutSplash 0.8s forwards;
-            animation-delay: 4s;
+            opacity: 1; visibility: visible; transition: opacity 0.8s ease;
         }
         .splash-logo { display: flex; gap: 10px; }
         .splash-logo span {
             font-size: 100px; font-weight: 900; color: #222; opacity: 0.2;
-            display: inline-block; animation: turnWhite 1.5s forwards;
+            display: inline-block;
+        }
+        
+        /* Harf Parlama Efekti */
+        .animate-char {
+            animation: turnWhite 1.5s forwards !important;
         }
         @keyframes turnWhite { 
             0% { color: #222; opacity: 0.2; } 
             100% { color: #ffffff; opacity: 1; text-shadow: 0 0 30px rgba(255, 255, 255, 0.6); } 
         }
-        @keyframes fadeOutSplash {
-            0% { opacity: 1; visibility: visible; }
-            100% { opacity: 0; visibility: hidden; pointer-events: none; }
-        }
-        /* Harf Gecikmeleri (4 saniyeye yayılmış) */
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } /* G */
-        .splash-logo span:nth-child(2) { animation-delay: 0.5s; } /* i */
-        .splash-logo span:nth-child(3) { animation-delay: 0.8s; } /* B */
-        .splash-logo span:nth-child(4) { animation-delay: 1.1s; } /* i */
-        .splash-logo span:nth-child(5) { animation-delay: 1.4s; } /* T */
-        .splash-logo span:nth-child(6) { animation-delay: 1.7s; } /* V */
 
         /* === ANA UYGULAMA === */
-        #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; opacity: 1; }
-        
+        #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; }
         .hero {
             position: relative; flex: 1; width: 100%;
             background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center center / cover no-repeat;
@@ -55,12 +46,13 @@
         .ui-footer { height: 300px; background: #000; display: flex; flex-direction: column; z-index: 10; }
         .seasons { display: flex; gap: 10px; padding: 10px 60px; }
         
+        /* BUTONLAR */
         .season-btn { 
             background: #1a1a1a; padding: 6px 14px; border-radius: 6px; font-size: 14px; 
             color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
         }
         .season-btn:focus { color: #fff !important; border-color: #f1c40f; transform: scale(1.05); }
-        .season-btn.active { color: #f1c40f; border-bottom: 2px solid #f1c40f; }
+        .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
 
         .episodes { display: flex; gap: 15px; padding: 10px 60px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; }
         .episode-card {
@@ -73,32 +65,20 @@
         .episode-card span { position: relative; z-index: 2; padding: 10px; font-size: 12px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
         .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
 
-        /* === PLAYER & SPINNER === */
+        /* PLAYER & SPINNER */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; justify-content: center; align-items: center; }
         #loading-screen { position: absolute; inset: 0; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10001; }
         .spinner { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         
-        #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
-        .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; }
-        #close-popup-btn { background: transparent; color: #fff; border: 2px solid #e50914; padding: 10px 30px; border-radius: 6px; font-size: 16px; margin-top: 15px; }
-        #close-popup-btn:focus { background: #e50914; border-color: #f1c40f; outline: none; }
         video { width: 100%; height: 100%; background: #000; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <div class="splash-logo">
+        <div class="splash-logo" id="logo-container">
             <span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span>
-        </div>
-    </div>
-
-    <div id="error-popup">
-        <div class="popup-content">
-            <h2 style="color:#e50914">UYARI</h2>
-            <p>Bu sezonda teknik bir problem yaşanıyor. Daha sonra tekrar deneyin.</p>
-            <button id="close-popup-btn">Tamam</button>
         </div>
     </div>
 
@@ -123,6 +103,7 @@
     </div>
 
 <script>
+    // TÜM SEZONLAR VE TÜM LİNKLER GERİ GELDİ
     const episodeData = {
         1: [
             { name: "Kokariç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4" },
@@ -180,13 +161,13 @@
         ],
         6: [
             { name: "Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
-            { name: "Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4" },
-            { name: "Girls' Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4" },
-            { name: "Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604.mp4" },
-            { name: "Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605.mp4" },
-            { name: "Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606.mp4" },
-            { name: "Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607.mp4" },
-            { name: "Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608.mp4" },
+            { name: "Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602%20%20-%20%20Mikrodalga.mp4" },
+            { name: "Girls' Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603%20-%20Girls%20Night%20Out.mp4" },
+            { name: "Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604%20-%20Metin.mp4" },
+            { name: "Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605%20Nomen%20est%20Omen.mp4" },
+            { name: "Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606%20%C3%87a%C4%9Fr%C4%B1.mp4" },
+            { name: "Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607%20-%20Gece%20Kaplanlar%C4%B1.mp4" },
+            { name: "Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608%20%C3%87%C3%B6l%20Defnesi.mp4" },
             { name: "Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
             { name: "İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
             { name: "Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
@@ -197,25 +178,40 @@
 
     const episodesEl = document.getElementById("episodes");
     const seasonButtons = document.querySelectorAll(".season-btn");
+    const splash = document.getElementById("splash");
     const vContainer = document.getElementById("video-player-container");
     const vMain = document.getElementById("main-video");
     const loader = document.getElementById("loading-screen");
-    const errPop = document.getElementById("error-popup");
-    let lastFocus = null;
 
     function initialize() {
+        // 1. Bölümleri hazırla
         loadSeason(1);
         seasonButtons[0].classList.add("active");
-        // Splash animasyonu bittiğinde odaklan (4 saniye sonra)
-        setTimeout(() => { seasonButtons[0].focus(); }, 4200);
+
+        // 2. Harfleri tek tek yak (GiBiTV)
+        const spans = document.querySelectorAll("#logo-container span");
+        spans.forEach((span, index) => {
+            setTimeout(() => {
+                span.classList.add("animate-char");
+            }, (index + 1) * 350); 
+        });
+
+        // 3. Splash'i kaldır ve butonlara odaklan
+        setTimeout(() => {
+            splash.style.opacity = "0";
+            setTimeout(() => {
+                splash.style.display = "none";
+                seasonButtons[0].focus();
+            }, 800);
+        }, 4000);
     }
 
-    document.addEventListener('DOMContentLoaded', initialize);
-    window.onload = initialize;
+    // Android WebView için zorunlu tetikleyiciler
+    window.addEventListener('load', initialize);
+    if (document.readyState === 'complete') initialize();
 
     function playVideo(url) {
         if(!url) return;
-        lastFocus = document.activeElement;
         vContainer.style.display = "flex";
         loader.style.display = "flex";
         vMain.src = url;
@@ -226,11 +222,6 @@
 
     function loadSeason(season) {
         episodesEl.innerHTML = "";
-        if (season == "2") {
-            errPop.style.display = "flex";
-            document.getElementById("close-popup-btn").focus();
-            return;
-        }
         const data = episodeData[season] || [];
         data.forEach(ep => {
             const div = document.createElement("div");
@@ -250,17 +241,12 @@
         };
     });
 
-    document.getElementById("close-popup-btn").onclick = () => {
-        errPop.style.display = "none";
-        seasonButtons[0].focus();
-    };
-
     document.addEventListener('keydown', (e) => {
         if (vContainer.style.display === "flex") {
             if (e.keyCode === 8 || e.keyCode === 27) {
                 vMain.pause(); vMain.src = "";
                 vContainer.style.display = "none";
-                if(lastFocus) lastFocus.focus();
+                e.preventDefault();
             }
         } else {
             const focused = document.activeElement;
