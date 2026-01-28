@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gibi TV - Android TV</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body {
+            background: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif;
+            width: 100vw; height: 100vh; overflow: hidden; user-select: none;
+            display: flex; flex-direction: column;
+        }
+
+        /* === SPLASH SCREEN (HARF HARF GELEN) === */
+        #splash {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .splash-logo { display: flex; gap: 10px; }
+        .splash-logo span {
+            font-size: 100px; font-weight: 900; color: #222; opacity: 0.1;
+            display: inline-block; animation: turnWhite 1.5s forwards;
+        }
+        @keyframes turnWhite { 
+            0% { color: #222; opacity: 0.1; } 
+            100% { color: #ffffff; opacity: 1; text-shadow: 0 0 25px rgba(255, 255, 255, 0.5); } 
+        }
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; }
+        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.6s; }
+        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.0s; }
+        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
+
+        .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out; }
+
+        /* === ANA UYGULAMA === */
+        #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in; }
+        #main-app.show { opacity: 1; }
+        .hero {
+            position: relative; flex: 1; width: 100%;
+            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center center / cover no-repeat;
+            display: flex; align-items: flex-end; padding-left: 60px; padding-bottom: 20px;
+        }
+        .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); z-index: 1; }
+        .cover-title { font-size: 80px; font-weight: bold; z-index: 5; text-shadow: 0 4px 20px rgba(0,0,0,1); }
+
+        .ui-footer { height: 380px; background: #000; display: flex; flex-direction: column; z-index: 10; }
+        .seasons { display: flex; gap: 15px; padding: 10px 60px; }
+        
+        /* SEZON BUTONLARI - BEYAZLIK KALDIRILDI */
+        .season-btn { 
+            background: #1a1a1a; padding: 10px 25px; border-radius: 8px; font-size: 18px; 
+            color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
+        }
+        .season-btn:focus { 
+            color: #fff !important; 
+            border-color: #f1c40f; /* Sadece kenar çerçevesi */
+            transform: scale(1.05); 
+        }
+        .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
+
+        .episodes { 
+            display: flex; gap: 20px; padding: 20px 60px; 
+            overflow-x: auto; scroll-behavior: smooth;
+            scrollbar-width: none; -ms-overflow-style: none; 
+        }
+        .episodes::-webkit-scrollbar { display: none; }
+
+        .episode-card {
+            min-width: 260px; height: 150px; border-radius: 12px; position: relative; 
+            overflow: hidden; display: flex; align-items: flex-end; 
+            flex-shrink: 0; transition: 0.2s; border: none;
+            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center center / cover no-repeat;
+            cursor: pointer;
+        }
+        .episode-card::before { 
+            content: ""; position: absolute; inset: 0; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%); 
+            z-index: 1; 
+        }
+        .episode-card span { 
+            position: relative; z-index: 2; padding: 15px; 
+            font-size: 15px; font-weight: 500; color: #fff; 
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; 
+        }
+        /* BÖLÜM KARTI ODAK - BEYAZLIKSIZ ÇERÇEVE */
+        .episode-card:focus { 
+            box-shadow: inset 0 0 0 5px #f1c40f;
+            transform: scale(1.1); 
+            z-index: 20; 
+        }
+
+        /* === ERROR POPUP === */
+        #error-popup {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .popup-content {
+            background: #1a1a1a; padding: 40px; border-radius: 20px; border: 2px solid #e50914;
+            max-width: 500px; text-align: center;
+        }
+        #close-popup-btn {
+            background: transparent; color: #fff; border: 2px solid #e50914; padding: 12px 40px;
+            border-radius: 8px; font-size: 18px; cursor: pointer; margin-top: 20px; transition: 0.2s;
+        }
+        #close-popup-btn:focus { background: #e50914; border-color: #f1c40f; outline: none; }
+
+        #video-player-container {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: none; justify-content: center; align-items: center;
+        }
+        video { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div id="splash">
+        <div class="splash-logo">
+            <span>G</span><span>İ</span><span>B</span><span>İ</span><span>T</span><span>V</span>
+        </div>
+    </div>
+
+    <div id="error-popup">
+        <div class="popup-content">
+            <h2 style="color:#e50914">UYARI</h2>
+            <p>Bu sezonda teknik bir problem yaşanıyor. Daha sonra tekrar deneyin.</p>
+            <button id="close-popup-btn">Tamam</button>
+        </div>
+    </div>
+
+    <div id="video-player-container"><video id="main-video"></video></div>
+
+    <div id="main-app">
+        <div class="hero"><div class="cover-title">Gibi</div></div>
+        <div class="ui-footer">
+            <div class="seasons">
+                <div class="season-btn" tabindex="1" data-season="1">Sezon 1</div>
+                <div class="season-btn" tabindex="2" data-season="2">Sezon 2</div>
+                <div class="season-btn" tabindex="3" data-season="3">Sezon 3</div>
+                <div class="season-btn" tabindex="4" data-season="4">Sezon 4</div>
+                <div class="season-btn" tabindex="5" data-season="5">Sezon 5</div>
+                <div class="season-btn" tabindex="6" data-season="6">Sezon 6</div>
+            </div>
+            <div id="episodes" class="episodes"></div>
+        </div>
+    </div>
+
+<script>
+    const episodeData = {
+        1: [
+            { name: "Kokariç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4" },
+            { name: "Vatka", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/2%20-%20Vatka.mp4" },
+            { name: "Nü Model", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/3%20-%20N%C3%BC%20Model.mp4" },
+            { name: "Erasmus'la Gelen Yamyam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/4%20-%20Erasmuslu%20Yamyam.mp4" },
+            { name: "Yanlış Mentor", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5%20-%20Yanl%C4%B1%C5%9F%20Mentor.mp4" },
+            { name: "Karanlık Güç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6%20-%20Karanl%C4%B1k%20G%C3%BC%C3%A7.mp4" },
+            { name: "İkinci Yol", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7%20-%20%C4%B0kinci%20Yol.mp4" },
+            { name: "Badana", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8%20-%20Badana.mp4" },
+            { name: "Ayırtma Yenilemesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9%20-%20Ay%C4%B1rtma%20Yenilemesi.mp4" },
+            { name: "Kan Parası", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
+            { name: "Yılmaz Bey Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
+            { name: "Atın Bulunuşu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
+        ],
+        2: [], 
+        3: [
+            { name: "Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
+            { name: "Keskin Nişancı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4" },
+            { name: "Büfe", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.B%C3%B6l%C3%BCm%20B%C3%BCfe.mp4" },
+            { name: "Sınıfsal Veda", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.B%C3%B6l%C3%BCm%20S%C4%B1n%C4%B1fsal%20Veda.mp4" },
+            { name: "Mazbut Bir Hayat", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.B%C3%B6l%C3%BCm%20Mazbut%20Bir%20Hayat.mp4" },
+            { name: "Ghosting", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.B%C3%B6l%C3%BCm%20Ghosting.mp4" },
+            { name: "Teşekkürler", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.B%C3%B6l%C3%BCm%20Te%C5%9Fekk%C3%BCrler.mp4" },
+            { name: "Gülnuray", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.B%C3%B6l%C3%BCm%20G%C3%BClnuray.mp4" },
+            { name: "Bilanço", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.B%C3%B6l%C3%BCm%20Bilan%C3%A7o.mp4" },
+            { name: "Birinci Kabak", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.B%C3%B6l%C3%BCm%20Birinci%20Kabak.mp4" }
+        ],
+        4: [
+            { name: "Övgü", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.B%C3%B6l%C3%BCm%20%C3%96vg%C3%BC.mp4" },
+            { name: "Bin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.B%C3%B6l%C3%BCm%20Bin.mp4" },
+            { name: "Orta Yaş Krizi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.B%C3%B6l%C3%BCm%20Orta%20Ya%C5%9F%20Krizi.mp4" },
+            { name: "Kafa Nakli", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.B%C3%B6l%C3%BCm%20Kafa%20Nakli.mp4" },
+            { name: "Patern", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.B%C3%B6l%C3%BCm%20Patern.mp4" },
+            { name: "165", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.B%C3%B6l%C3%BCm%20165.mp4" },
+            { name: "Dönen Tekme", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.B%C3%B6l%C3%BCm%20D%C3%B6nen%20Tekme.mp4" },
+            { name: "Defter", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.B%C3%B6l%C3%BCm%20Defter.mp4" },
+            { name: "Dirty Talk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.B%C3%B6l%C3%BCm%20Dirty%20Talk.mp4" },
+            { name: "MÖ 2998-2997 Eğitim Öğretim Yılı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.B%C3%B6l%C3%BCm%20E%C4%9E%C4%B0T%C4%B0M%20%C3%96%C4%9ERET%C4%B0M%20YILI.mp4" }
+        ],
+        5: [
+            { name: "Sinek", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4" },
+            { name: "Kahır", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4" },
+            { name: "Şako Bosphorus", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4" },
+            { name: "Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
+            { name: "Böbrek Taşı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4" },
+            { name: "Aşağılık Adam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4" },
+            { name: "Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
+            { name: "Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
+            { name: "İrade", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4" },
+            { name: "Geleceğin Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10%20-%20Gelece%C4%9Fin%20Habercisi%20Gen%C3%A7%20Yeti%C5%9Fkinler.mp4" },
+            { name: "Kenan Ticaret", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
+            { name: "Demir Kalenin Kuzgunları 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12%20-%20DEM%C4%B0R%20KALEN%C4%B0N%20KUZGUNLARI%201.mp4" },
+            { name: "Demir Kalenin Kuzgunları 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13%20-%20Demir%20Kalenin%20Kuzgunlar%C4%B1%202.mp4" }
+        ],
+        6: [
+            { name: "Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
+            { name: "Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602%20%20-%20%20Mikrodalga.mp4" },
+            { name: "Girls' Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603%20-%20Girls%20Night%20Out.mp4" },
+            { name: "Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604%20-%20Metin.mp4" },
+            { name: "Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605%20Nomen%20est%20Omen.mp4" },
+            { name: "Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606%20%C3%87a%C4%9Fr%C4%B1.mp4" },
+            { name: "Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607%20-%20Gece%20Kaplanlar%C4%B1.mp4" },
+            { name: "Çöl Definesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608%20%C3%87%C3%B6l%20Defnesi.mp4" },
+            { name: "Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
+            { name: "İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
+            { name: "Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
+            { name: "Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
+            { name: "Yapılanlar 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x13.mp4" }
+        ]
+    };
+
+    const episodesEl = document.getElementById("episodes");
+    const seasonButtons = document.querySelectorAll(".season-btn");
+    const videoContainer = document.getElementById("video-player-container");
+    const mainVideo = document.getElementById("main-video");
+    const errorPopup = document.getElementById("error-popup");
+    const closePopupBtn = document.getElementById("close-popup-btn");
+    let lastFocusedElement = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            document.getElementById("splash").classList.add("fade-out");
+            document.getElementById("main-app").classList.add("show");
+            setTimeout(() => { seasonButtons[0].focus(); }, 500);
+        }, 4000); 
+    });
+
+    function playVideo(url) {
+        if(!url) return;
+        lastFocusedElement = document.activeElement;
+        videoContainer.style.display = "flex";
+        mainVideo.src = url;
+        mainVideo.play();
+    }
+
+    function showError() {
+        lastFocusedElement = document.activeElement;
+        errorPopup.style.display = "flex";
+        closePopupBtn.focus();
+    }
+
+    closePopupBtn.onclick = () => {
+        errorPopup.style.display = "none";
+        if(lastFocusedElement) lastFocusedElement.focus();
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (errorPopup.style.display === "flex") {
+            if (e.keyCode === 13) closePopupBtn.onclick();
+            e.preventDefault(); return;
+        }
+
+        if (videoContainer.style.display === "flex") {
+            switch (e.keyCode) {
+                case 37: mainVideo.currentTime -= 10; e.preventDefault(); break;
+                case 39: mainVideo.currentTime += 10; e.preventDefault(); break;
+                case 13: mainVideo.paused ? mainVideo.play() : mainVideo.pause(); e.preventDefault(); break;
+                case 8: case 27:
+                    mainVideo.pause(); mainVideo.src = "";
+                    videoContainer.style.display = "none";
+                    if(lastFocusedElement) lastFocusedElement.focus();
+                    e.preventDefault(); break;
+            }
+        } else {
+            const focused = document.activeElement;
+            if (focused.classList.contains('season-btn') && e.keyCode === 40) {
+                const firstEp = document.querySelector('.episode-card');
+                if(firstEp) firstEp.focus();
+                e.preventDefault();
+            } else if (focused.classList.contains('episode-card') && e.keyCode === 38) {
+                document.querySelector('.season-btn.active').focus();
+                e.preventDefault();
+            }
+        }
+    });
+
+    function loadSeason(season) {
+        episodesEl.innerHTML = "";
+        if (season == "2") { showError(); return; }
+        (episodeData[season] || []).forEach(ep => {
+            const div = document.createElement("div");
+            div.className = "episode-card"; div.tabIndex = 0;
+            div.innerHTML = `<span>${ep.name}</span>`;
+            div.onclick = () => playVideo(ep.url);
+            div.onfocus = () => div.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            episodesEl.appendChild(div);
+        });
+    }
+
+    seasonButtons.forEach(btn => {
+        btn.onclick = () => {
+            if (btn.dataset.season == "2") { showError(); return; }
+            seasonButtons.forEach(b => b.classList.remove("active"));
+            btn.classList.add("active"); loadSeason(btn.dataset.season);
+        };
+    });
+
+    loadSeason(1); seasonButtons[0].classList.add("active");
+</script>
+</body>
+</html>
