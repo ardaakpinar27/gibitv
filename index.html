@@ -12,27 +12,20 @@
             display: flex; flex-direction: column;
         }
 
-        /* === SPLASH SCREEN === */
+        /* === SPLASH SCREEN (LOGO) === */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center;
-            transition: opacity 1s ease-out; /* Sadece opaklık geçişi */
+            opacity: 1; /* Başlangıçta görünür */
+            transition: opacity 1s ease-out; /* Kaybolurken yumuşak geçiş */
         }
         .splash-logo { display: flex; gap: 10px; }
         .splash-logo span {
-            font-size: 100px; font-weight: 900; color: #222; opacity: 0.1;
-            display: inline-block; animation: turnWhite 1.5s forwards;
+            font-size: 100px; font-weight: 900; color: #ffffff; 
+            text-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            display: inline-block;
+            /* Logo animasyonunu kaldırdım, direkt beyaz görünsün ki takılmasın */
         }
-        @keyframes turnWhite { 
-            0% { color: #222; opacity: 0.1; } 
-            100% { color: #ffffff; opacity: 1; text-shadow: 0 0 25px rgba(255, 255, 255, 0.5); } 
-        }
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; }
-        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.6s; }
-        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.0s; }
-        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
 
         /* === ANA UYGULAMA === */
         #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in; }
@@ -85,17 +78,16 @@
             box-shadow: inset 0 0 0 5px #f1c40f; transform: scale(1.1); z-index: 20; 
         }
 
-        /* === LOADING TEXT (Spinner YOK) === */
+        /* === LOADING TEXT (SABİT) === */
         #loading-overlay {
             position: fixed; inset: 0; background: #000; z-index: 15000;
             display: none; justify-content: center; align-items: center;
         }
         .loading-text { 
             font-size: 32px; font-weight: bold; color: #f1c40f; 
-            letter-spacing: 4px; animation: pulse 1s infinite; 
-            text-transform: uppercase;
+            letter-spacing: 4px; text-transform: uppercase;
+            /* Animasyon YOK, Sabit yazı */
         }
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
         /* === VIDEO PLAYER === */
         #video-player-container {
@@ -124,7 +116,7 @@
 <body>
     <div id="splash">
         <div class="splash-logo">
-            <span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span>
+            <span>G</span><span>İ</span><span>B</span><span>İ</span><span>T</span><span>V</span>
         </div>
     </div>
 
@@ -239,13 +231,13 @@
     const closePopupBtn = document.getElementById("close-popup-btn");
     let lastFocusedElement = null;
 
-    // === SPLASH EKRANI KAPATMA (GARANTİ YÖNTEM) ===
-    window.addEventListener('load', () => {
+    // === SPLASH EKRANI KAPATMA (DÜZELTİLMİŞ) ===
+    window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById("splash");
             // Önce yavaşça karart
             splash.style.opacity = '0';
-            // 1 saniye sonra tamamen yok et (display: none)
+            // 1 saniye sonra tamamen kaldır ve ana uygulamayı göster
             setTimeout(() => { 
                 splash.style.display = 'none'; 
                 document.getElementById("main-app").classList.add("show");
