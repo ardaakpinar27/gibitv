@@ -12,7 +12,7 @@
             display: flex; flex-direction: column;
         }
 
-        /* === SPLASH SCREEN (HARF HARF GELEN) === */
+        /* === SPLASH SCREEN (GiBiTV) === */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center;
@@ -26,12 +26,13 @@
             0% { color: #222; opacity: 0.1; } 
             100% { color: #ffffff; opacity: 1; text-shadow: 0 0 25px rgba(255, 255, 255, 0.5); } 
         }
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; }
-        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.6s; }
-        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.0s; }
-        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
+        /* GiBiTV harf animasyon süreleri */
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } /* G */
+        .splash-logo span:nth-child(2) { animation-delay: 0.4s; } /* i */
+        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } /* B */
+        .splash-logo span:nth-child(4) { animation-delay: 0.8s; } /* i */
+        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } /* T */
+        .splash-logo span:nth-child(6) { animation-delay: 1.2s; } /* V */
 
         .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out; }
 
@@ -49,14 +50,13 @@
         .ui-footer { height: 380px; background: #000; display: flex; flex-direction: column; z-index: 10; }
         .seasons { display: flex; gap: 15px; padding: 10px 60px; }
         
-        /* SEZON BUTONLARI - BEYAZLIK KALDIRILDI */
         .season-btn { 
             background: #1a1a1a; padding: 10px 25px; border-radius: 8px; font-size: 18px; 
             color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
         }
         .season-btn:focus { 
             color: #fff !important; 
-            border-color: #f1c40f; /* Sadece kenar çerçevesi */
+            border-color: #f1c40f; 
             transform: scale(1.05); 
         }
         .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
@@ -85,7 +85,6 @@
             font-size: 15px; font-weight: 500; color: #fff; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; 
         }
-        /* BÖLÜM KARTI ODAK - BEYAZLIKSIZ ÇERÇEVE */
         .episode-card:focus { 
             box-shadow: inset 0 0 0 5px #f1c40f;
             transform: scale(1.1); 
@@ -107,17 +106,32 @@
         }
         #close-popup-btn:focus { background: #e50914; border-color: #f1c40f; outline: none; }
 
+        /* === VIDEO PLAYER & SPINNER === */
         #video-player-container {
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: none; justify-content: center; align-items: center;
         }
-        video { width: 100%; height: 100%; }
+        #loading-screen {
+            position: absolute; inset: 0; background: #000; 
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 10001;
+        }
+        .spinner {
+            width: 70px; height: 70px;
+            border: 6px solid rgba(255, 255, 255, 0.1);
+            border-top: 6px solid #f1c40f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        video { width: 100%; height: 100%; background: #000; }
     </style>
 </head>
 <body>
     <div id="splash">
         <div class="splash-logo">
-            <span>G</span><span>İ</span><span>B</span><span>İ</span><span>T</span><span>V</span>
+            <span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span>
         </div>
     </div>
 
@@ -129,7 +143,10 @@
         </div>
     </div>
 
-    <div id="video-player-container"><video id="main-video"></video></div>
+    <div id="video-player-container">
+        <div id="loading-screen"><div class="spinner"></div></div>
+        <video id="main-video"></video>
+    </div>
 
     <div id="main-app">
         <div class="hero"><div class="cover-title">Gibi</div></div>
@@ -210,7 +227,7 @@
             { name: "Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605%20Nomen%20est%20Omen.mp4" },
             { name: "Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606%20%C3%87a%C4%9Fr%C4%B1.mp4" },
             { name: "Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607%20-%20Gece%20Kaplanlar%C4%B1.mp4" },
-            { name: "Çöl Definesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608%20%C3%87%C3%B6l%20Defnesi.mp4" },
+            { name: "Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608%20%C3%87%C3%B6l%20Defnesi.mp4" },
             { name: "Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
             { name: "İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
             { name: "Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
@@ -223,6 +240,7 @@
     const seasonButtons = document.querySelectorAll(".season-btn");
     const videoContainer = document.getElementById("video-player-container");
     const mainVideo = document.getElementById("main-video");
+    const loadingScreen = document.getElementById("loading-screen");
     const errorPopup = document.getElementById("error-popup");
     const closePopupBtn = document.getElementById("close-popup-btn");
     let lastFocusedElement = null;
@@ -239,8 +257,19 @@
         if(!url) return;
         lastFocusedElement = document.activeElement;
         videoContainer.style.display = "flex";
+        loadingScreen.style.display = "flex"; // Spinner aç
+        
         mainVideo.src = url;
-        mainVideo.play();
+        mainVideo.load();
+        
+        // Video oynamaya başladığında spinner'ı gizle
+        mainVideo.onplaying = () => {
+            loadingScreen.style.display = "none";
+        };
+
+        mainVideo.oncanplay = () => {
+            mainVideo.play();
+        };
     }
 
     function showError() {
