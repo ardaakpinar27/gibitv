@@ -176,10 +176,6 @@
                     }, 500);
                 }
 
-                // === DÜZELTME ===
-                // Animasyon 3.5s başlıyor, 1s sürüyor => 4.5s'de bitiyor.
-                // 4.55s saniyede JavaScript ile HARD DELETE yapıyoruz.
-                // Bu sayede "Geri gelme" (glitch) imkansız hale geliyor.
                 setTimeout(() => {
                     const splash = document.getElementById("splash");
                     if(splash) {
@@ -425,8 +421,29 @@
         };
     });
 
-    loadSeason(1); 
-    seasonButtons[0].classList.add("active");
+    // === GÜVENLİ BAŞLATMA (SAFE INIT) ===
+    function initApp() {
+        try {
+            console.log("App başlatılıyor...");
+            // İlk sezonu yükle
+            loadSeason(1);
+            
+            // İlk butonu aktif yap
+            if (seasonButtons && seasonButtons.length > 0) {
+                seasonButtons[0].classList.add("active");
+            }
+        } catch (e) {
+            console.error("Başlatma hatası:", e);
+            if(window.onerror) window.onerror(e.message, "initApp", 0, 0, e);
+        }
+    }
+
+    // Sayfa tamamen yüklendiğinde başlat (Garantili yöntem)
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(initApp, 100);
+    } else {
+        document.addEventListener("DOMContentLoaded", initApp);
+    }
 </script>
 </body>
 </html>
