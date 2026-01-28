@@ -34,17 +34,21 @@
         .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
         .episode-card span { padding: 10px; font-size: 12px; font-weight: 500; background: rgba(0,0,0,0.6); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* PLAYER */
+        /* PLAYER & PLAYER BAR */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
-        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10001; display: none; }
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        
-        #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
-        .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; max-width: 400px; }
-        #close-popup-btn { background: #e50914; color: #fff; border: none; padding: 10px 30px; border-radius: 6px; font-size: 16px; margin-top: 15px; cursor: pointer; }
-        
         video { width: 100%; height: 100%; }
+        
+        #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transition: opacity 0.5s; }
+        .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
+        #progress-bar { width: 0%; height: 100%; background: #f1c40f; transition: width 0.1s; }
+        .time-info { font-size: 18px; font-weight: bold; text-align: right; text-shadow: 0 2px 4px #000; }
+        
+        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; display: none; }
+        .spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
+        .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; }
     </style>
 </head>
 <body>
@@ -52,10 +56,17 @@
 <div id="splash"><div class="splash-logo"><span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span></div></div>
 
 <div id="error-popup">
-    <div class="popup-content"><h2>UYARI</h2><p>Bu sezonda teknik bir problem yaşanıyor.</p><button id="close-popup-btn">Tamam</button></div>
+    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>2. Sezon şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
 </div>
 
-<div id="video-player-container"><div id="loading-screen"><div class="spinner"></div></div><video id="main-video"></video></div>
+<div id="video-player-container">
+    <div id="loading-screen"><div class="spinner"></div></div>
+    <video id="main-video" playsinline></video>
+    <div id="player-ui">
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div class="time-info"><span id="curr-time">00:00</span> / <span id="total-time">00:00</span></div>
+    </div>
+</div>
 
 <div id="main-app">
     <div class="hero"><div class="cover-title">GiBiTV</div></div>
@@ -146,21 +157,33 @@
 
     const epEl = document.getElementById("episodes"), sBtns = document.querySelectorAll(".season-btn");
     const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
-    const errPop = document.getElementById("error-popup"), closeErr = document.getElementById("close-popup-btn");
-    let lastFocus = null;
+    const pUi = document.getElementById("player-ui"), pBar = document.getElementById("progress-bar");
+    const cTime = document.getElementById("curr-time"), tTime = document.getElementById("total-time");
+    let uiTimer, lastFocus;
 
-    // ANDROID BRIDGE
+    function formatTime(s) {
+        let h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = Math.floor(s % 60);
+        return (h > 0 ? h + ":" : "") + (m < 10 ? "0" + m : m) + ":" + (sec < 10 ? "0" + sec : sec);
+    }
+
+    function showUI() { pUi.style.opacity = 1; clearTimeout(uiTimer); uiTimer = setTimeout(() => { pUi.style.opacity = 0; }, 3000); }
+
     function notifyAndroid(isOpen) { if (window.AndroidBridge) { window.AndroidBridge.setVideoStatus(isOpen); } }
 
     function closeVideo() {
-        if (vCont.style.display === "flex") {
-            vMain.pause(); vMain.src = ""; vCont.style.display = "none";
-            notifyAndroid(false); if(lastFocus) lastFocus.focus();
-        }
+        vMain.pause(); vMain.src = ""; vCont.style.display = "none";
+        notifyAndroid(false); if(lastFocus) lastFocus.focus();
     }
 
+    vMain.ontimeupdate = () => {
+        let per = (vMain.currentTime / vMain.duration) * 100;
+        pBar.style.width = per + "%";
+        cTime.innerText = formatTime(vMain.currentTime);
+        tTime.innerText = formatTime(vMain.duration || 0);
+    };
+
     function loadSeason(s) {
-        if (s == "2") { lastFocus = document.activeElement; errPop.style.display = "flex"; closeErr.focus(); return; }
+        if (s == "2") { lastFocus = document.activeElement; document.getElementById("error-popup").style.display = "flex"; document.getElementById("close-popup-btn").focus(); return; }
         epEl.innerHTML = "";
         (episodeData[s] || []).forEach(ep => {
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
@@ -168,7 +191,7 @@
             d.onclick = () => { 
                 lastFocus = d; vCont.style.display = "flex"; loader.style.display = "flex";
                 vMain.src = ep.url; vMain.load(); notifyAndroid(true);
-                vMain.onplaying = () => loader.style.display = "none";
+                vMain.onplaying = () => { loader.style.display = "none"; showUI(); };
                 vMain.oncanplay = () => vMain.play();
             };
             d.onfocus = () => d.scrollIntoView({ behavior: 'smooth', inline: 'center' });
@@ -177,26 +200,26 @@
     }
 
     sBtns.forEach(btn => btn.onclick = () => {
-        const s = btn.dataset.season;
-        if(s !== "2") { sBtns.forEach(b => b.classList.remove("active")); btn.classList.add("active"); }
-        loadSeason(s);
+        sBtns.forEach(b => b.classList.remove("active"));
+        if(btn.dataset.season !== "2") btn.classList.add("active");
+        loadSeason(btn.dataset.season);
     });
 
-    closeErr.onclick = () => { errPop.style.display = "none"; if(lastFocus) lastFocus.focus(); };
+    document.getElementById("close-popup-btn").onclick = () => { document.getElementById("error-popup").style.display = "none"; if(lastFocus) lastFocus.focus(); };
 
-    window.onload = () => { loadSeason(1); sBtns[0].classList.add("active"); setTimeout(() => { sBtns[0].focus(); }, 4600); };
+    window.onload = () => { loadSeason(1); sBtns[0].classList.add("active"); setTimeout(() => sBtns[0].focus(), 4600); };
 
-    // TUŞ KONTROLLERİ (İLERİ, GERİ, OK, GERİ TUŞU)
     document.addEventListener('keydown', (e) => {
         if (vCont.style.display === "flex") {
+            showUI();
             switch(e.keyCode) {
-                case 13: vMain.paused ? vMain.play() : vMain.pause(); break; // OK
-                case 39: vMain.currentTime += 10; break; // SAĞ (İleri 10sn)
-                case 37: vMain.currentTime -= 10; break; // SOL (Geri 10sn)
+                case 13: e.preventDefault(); vMain.paused ? vMain.play() : vMain.pause(); break; // OK - DUR / BAŞLAT
+                case 39: vMain.currentTime += 10; break; // SAĞ
+                case 37: vMain.currentTime -= 10; break; // SOL
                 case 8: case 27: closeVideo(); e.preventDefault(); break; // GERİ
             }
-        } else if (errPop.style.display === "flex") {
-            if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 13) { closeErr.onclick(); e.preventDefault(); }
+        } else if (document.getElementById("error-popup").style.display === "flex") {
+            if (e.keyCode === 8 || e.keyCode === 13) { document.getElementById("close-popup-btn").onclick(); e.preventDefault(); }
         } else {
             const f = document.activeElement;
             if (f.classList.contains('season-btn') && e.keyCode === 40) { const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); }
