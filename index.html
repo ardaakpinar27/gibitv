@@ -12,25 +12,32 @@
             display: flex; flex-direction: column;
         }
 
-        /* === SPLASH SCREEN (LOGO) === */
+        /* === SPLASH SCREEN (HARF HARF GELEN) === */
         #splash {
             position: fixed; inset: 0; background: #000; z-index: 9999;
             display: flex; justify-content: center; align-items: center;
-            opacity: 1; /* Başlangıçta görünür */
-            transition: opacity 1s ease-out; /* Kaybolurken yumuşak geçiş */
         }
         .splash-logo { display: flex; gap: 10px; }
         .splash-logo span {
-            font-size: 100px; font-weight: 900; color: #ffffff; 
-            text-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
-            display: inline-block;
-            /* Logo animasyonunu kaldırdım, direkt beyaz görünsün ki takılmasın */
+            font-size: 100px; font-weight: 900; color: #222; opacity: 0.1;
+            display: inline-block; animation: turnWhite 1.5s forwards;
         }
+        @keyframes turnWhite { 
+            0% { color: #222; opacity: 0.1; } 
+            100% { color: #ffffff; opacity: 1; text-shadow: 0 0 25px rgba(255, 255, 255, 0.5); } 
+        }
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; }
+        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.6s; }
+        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.0s; }
+        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
+
+        .fade-out { opacity: 0; visibility: hidden; transition: opacity 0.8s ease-out; }
 
         /* === ANA UYGULAMA === */
         #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in; }
         #main-app.show { opacity: 1; }
-        
         .hero {
             position: relative; flex: 1; width: 100%;
             background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center center / cover no-repeat;
@@ -42,12 +49,15 @@
         .ui-footer { height: 380px; background: #000; display: flex; flex-direction: column; z-index: 10; }
         .seasons { display: flex; gap: 15px; padding: 10px 60px; }
         
+        /* SEZON BUTONLARI - BEYAZLIK KALDIRILDI */
         .season-btn { 
             background: #1a1a1a; padding: 10px 25px; border-radius: 8px; font-size: 18px; 
             color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
         }
         .season-btn:focus { 
-            color: #fff !important; border-color: #f1c40f; transform: scale(1.05); 
+            color: #fff !important; 
+            border-color: #f1c40f; /* Sadece kenar çerçevesi */
+            transform: scale(1.05); 
         }
         .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
 
@@ -67,37 +77,22 @@
         }
         .episode-card::before { 
             content: ""; position: absolute; inset: 0; 
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%); z-index: 1; 
+            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%); 
+            z-index: 1; 
         }
         .episode-card span { 
             position: relative; z-index: 2; padding: 15px; 
             font-size: 15px; font-weight: 500; color: #fff; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; 
         }
+        /* BÖLÜM KARTI ODAK - BEYAZLIKSIZ ÇERÇEVE */
         .episode-card:focus { 
-            box-shadow: inset 0 0 0 5px #f1c40f; transform: scale(1.1); z-index: 20; 
+            box-shadow: inset 0 0 0 5px #f1c40f;
+            transform: scale(1.1); 
+            z-index: 20; 
         }
 
-        /* === LOADING TEXT (SABİT) === */
-        #loading-overlay {
-            position: fixed; inset: 0; background: #000; z-index: 15000;
-            display: none; justify-content: center; align-items: center;
-        }
-        .loading-text { 
-            font-size: 32px; font-weight: bold; color: #f1c40f; 
-            letter-spacing: 4px; text-transform: uppercase;
-            /* Animasyon YOK, Sabit yazı */
-        }
-
-        /* === VIDEO PLAYER === */
-        #video-player-container {
-            position: fixed; inset: 0; background: #000; z-index: 10000;
-            display: none; justify-content: center; align-items: center;
-        }
-        video { width: 100%; height: 100%; opacity: 0; transition: opacity 0.5s; }
-        video.playing { opacity: 1; }
-
-        /* === ERROR POPUP (Sezon 2 için) === */
+        /* === ERROR POPUP === */
         #error-popup {
             position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000;
             display: none; justify-content: center; align-items: center;
@@ -111,6 +106,12 @@
             border-radius: 8px; font-size: 18px; cursor: pointer; margin-top: 20px; transition: 0.2s;
         }
         #close-popup-btn:focus { background: #e50914; border-color: #f1c40f; outline: none; }
+
+        #video-player-container {
+            position: fixed; inset: 0; background: #000; z-index: 10000;
+            display: none; justify-content: center; align-items: center;
+        }
+        video { width: 100%; height: 100%; }
     </style>
 </head>
 <body>
@@ -122,14 +123,10 @@
 
     <div id="error-popup">
         <div class="popup-content">
-            <h2 style="color:#e50914; margin-bottom: 15px;">UYARI</h2>
-            <p style="font-size: 18px;">Bu sezonda teknik bir problem yaşanıyor. Daha sonra tekrar deneyin.</p>
+            <h2 style="color:#e50914">UYARI</h2>
+            <p>Bu sezonda teknik bir problem yaşanıyor. Daha sonra tekrar deneyin.</p>
             <button id="close-popup-btn">Tamam</button>
         </div>
-    </div>
-
-    <div id="loading-overlay">
-        <div class="loading-text">Yükleniyor...</div>
     </div>
 
     <div id="video-player-container"><video id="main-video"></video></div>
@@ -165,7 +162,7 @@
             { name: "Yılmaz Bey Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
             { name: "Atın Bulunuşu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
         ],
-        2: [], /* SEZON 2 BOŞ VE HATALI */
+        2: [], 
         3: [
             { name: "Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
             { name: "Keskin Nişancı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4" },
@@ -226,25 +223,25 @@
     const seasonButtons = document.querySelectorAll(".season-btn");
     const videoContainer = document.getElementById("video-player-container");
     const mainVideo = document.getElementById("main-video");
-    const loadingOverlay = document.getElementById("loading-overlay");
     const errorPopup = document.getElementById("error-popup");
     const closePopupBtn = document.getElementById("close-popup-btn");
     let lastFocusedElement = null;
 
-    // === SPLASH EKRANI KAPATMA (DÜZELTİLMİŞ) ===
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
-            const splash = document.getElementById("splash");
-            // Önce yavaşça karart
-            splash.style.opacity = '0';
-            // 1 saniye sonra tamamen kaldır ve ana uygulamayı göster
-            setTimeout(() => { 
-                splash.style.display = 'none'; 
-                document.getElementById("main-app").classList.add("show");
-                if(seasonButtons.length > 0) seasonButtons[0].focus();
-            }, 1000);
-        }, 3000); 
+            document.getElementById("splash").classList.add("fade-out");
+            document.getElementById("main-app").classList.add("show");
+            setTimeout(() => { seasonButtons[0].focus(); }, 500);
+        }, 4000); 
     });
+
+    function playVideo(url) {
+        if(!url) return;
+        lastFocusedElement = document.activeElement;
+        videoContainer.style.display = "flex";
+        mainVideo.src = url;
+        mainVideo.play();
+    }
 
     function showError() {
         lastFocusedElement = document.activeElement;
@@ -257,44 +254,12 @@
         if(lastFocusedElement) lastFocusedElement.focus();
     };
 
-    function playVideo(url) {
-        if(!url) return;
-        lastFocusedElement = document.activeElement;
-        
-        loadingOverlay.style.display = "flex";
-        videoContainer.style.display = "flex";
-        mainVideo.classList.remove("playing");
-        mainVideo.src = url;
-
-        // Video hazır olunca aç
-        const showVideo = () => {
-            loadingOverlay.style.display = "none";
-            mainVideo.classList.add("playing");
-            mainVideo.play().catch(e => console.log("Otomatik oynatma engellendi"));
-        };
-
-        // En az 1 saniye yazı görünsün (Estetik için)
-        setTimeout(() => {
-            if (mainVideo.readyState >= 3) {
-                showVideo();
-            } else {
-                mainVideo.oncanplay = showVideo;
-                // Çok uzun sürerse zorla aç
-                setTimeout(showVideo, 5000);
-            }
-        }, 1000);
-    }
-
     document.addEventListener('keydown', (e) => {
-        // Hata penceresi açıksa
         if (errorPopup.style.display === "flex") {
-            if (e.keyCode === 13 || e.keyCode === 27 || e.keyCode === 8) {
-                closePopupBtn.click();
-            }
+            if (e.keyCode === 13) closePopupBtn.onclick();
             e.preventDefault(); return;
         }
 
-        // Video açıksa
         if (videoContainer.style.display === "flex") {
             switch (e.keyCode) {
                 case 37: mainVideo.currentTime -= 10; e.preventDefault(); break;
@@ -303,12 +268,10 @@
                 case 8: case 27:
                     mainVideo.pause(); mainVideo.src = "";
                     videoContainer.style.display = "none";
-                    loadingOverlay.style.display = "none";
                     if(lastFocusedElement) lastFocusedElement.focus();
                     e.preventDefault(); break;
             }
         } else {
-            // Menüdeyse
             const focused = document.activeElement;
             if (focused.classList.contains('season-btn') && e.keyCode === 40) {
                 const firstEp = document.querySelector('.episode-card');
@@ -323,13 +286,7 @@
 
     function loadSeason(season) {
         episodesEl.innerHTML = "";
-        
-        // Sezon 2 Kontrolü (Hata Ver)
-        if(season == "2") {
-            showError();
-            return;
-        }
-
+        if (season == "2") { showError(); return; }
         (episodeData[season] || []).forEach(ep => {
             const div = document.createElement("div");
             div.className = "episode-card"; div.tabIndex = 0;
@@ -342,18 +299,13 @@
 
     seasonButtons.forEach(btn => {
         btn.onclick = () => {
-            // Sezon 2'ye tıklanırsa sadece hata göster, active class'ı değiştirme
-            if (btn.dataset.season == "2") {
-                showError();
-                return;
-            }
+            if (btn.dataset.season == "2") { showError(); return; }
             seasonButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active"); loadSeason(btn.dataset.season);
         };
     });
 
-    loadSeason(1); 
-    seasonButtons[0].classList.add("active");
+    loadSeason(1); seasonButtons[0].classList.add("active");
 </script>
 </body>
 </html>
