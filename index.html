@@ -38,6 +38,7 @@
         /* === ANA UYGULAMA === */
         #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in; }
         #main-app.show { opacity: 1; }
+        
         .hero {
             position: relative; flex: 1; width: 100%;
             background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center center / cover no-repeat;
@@ -49,14 +50,14 @@
         .ui-footer { height: 380px; background: #000; display: flex; flex-direction: column; z-index: 10; }
         .seasons { display: flex; gap: 15px; padding: 10px 60px; }
         
-        /* SEZON BUTONLARI - BEYAZLIK KALDIRILDI */
+        /* SEZON BUTONLARI */
         .season-btn { 
             background: #1a1a1a; padding: 10px 25px; border-radius: 8px; font-size: 18px; 
             color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
         }
         .season-btn:focus { 
             color: #fff !important; 
-            border-color: #f1c40f; /* Sadece kenar çerçevesi */
+            border-color: #f1c40f; 
             transform: scale(1.05); 
         }
         .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
@@ -85,7 +86,8 @@
             font-size: 15px; font-weight: 500; color: #fff; 
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; 
         }
-        /* BÖLÜM KARTI ODAK - BEYAZLIKSIZ ÇERÇEVE */
+        
+        /* BÖLÜM KARTI ODAK */
         .episode-card:focus { 
             box-shadow: inset 0 0 0 5px #f1c40f;
             transform: scale(1.1); 
@@ -111,10 +113,65 @@
             position: fixed; inset: 0; background: #000; z-index: 10000;
             display: none; justify-content: center; align-items: center;
         }
-        video { width: 100%; height: 100%; }
+        video { width: 100%; height: 100%; background: #000; }
+        
+        /* YÜKLENİYOR YAZISI STİLİ */
+        #loading-text {
+            position: absolute;
+            color: #f1c40f; /* İstediğiniz Sarı Renk */
+            font-size: 40px; 
+            font-weight: bold;
+            z-index: 10001; /* Videonun üzerinde dursun */
+            display: none; /* Varsayılan olarak gizli */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
     </style>
 </head>
 <body>
+    <!-- GÜVENLİK VE HATA YAKALAYICI (EN BAŞA EKLENDİ) -->
+    <script>
+        // Hataları TV ekranına basan fonksiyon
+        window.onerror = function(message, source, lineno, colno, error) {
+            const errorBox = document.createElement("div");
+            errorBox.style.position = "fixed";
+            errorBox.style.top = "0";
+            errorBox.style.left = "0";
+            errorBox.style.width = "100%";
+            errorBox.style.backgroundColor = "rgba(200, 0, 0, 0.9)";
+            errorBox.style.color = "white";
+            errorBox.style.padding = "20px";
+            errorBox.style.zIndex = "99999";
+            errorBox.style.fontSize = "24px";
+            errorBox.style.fontFamily = "monospace";
+            errorBox.innerHTML = "<b>HATA OLUŞTU:</b><br>" + message + "<br><small>" + source + ":" + lineno + "</small>";
+            document.body.appendChild(errorBox);
+            
+            setTimeout(() => {
+                const splash = document.getElementById("splash");
+                const app = document.getElementById("main-app");
+                if(splash) splash.classList.add("fade-out");
+                if(app) app.classList.add("show");
+            }, 1000);
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const splash = document.getElementById("splash");
+                if (splash) splash.classList.add("fade-out");
+                
+                const mainApp = document.getElementById("main-app");
+                if (mainApp) {
+                    mainApp.classList.add("show");
+                    setTimeout(() => { 
+                        const firstBtn = document.querySelector(".season-btn");
+                        if(firstBtn) firstBtn.focus();
+                    }, 500);
+                }
+            }, 4000); 
+        });
+    </script>
+
     <div id="splash">
         <div class="splash-logo">
             <span>G</span><span>İ</span><span>B</span><span>İ</span><span>T</span><span>V</span>
@@ -129,7 +186,10 @@
         </div>
     </div>
 
-    <div id="video-player-container"><video id="main-video"></video></div>
+    <div id="video-player-container">
+        <div id="loading-text">Yükleniyor...</div>
+        <video id="main-video"></video>
+    </div>
 
     <div id="main-app">
         <div class="hero"><div class="cover-title">Gibi</div></div>
@@ -223,25 +283,33 @@
     const seasonButtons = document.querySelectorAll(".season-btn");
     const videoContainer = document.getElementById("video-player-container");
     const mainVideo = document.getElementById("main-video");
+    const loadingText = document.getElementById("loading-text"); // Yeni Eklendi
     const errorPopup = document.getElementById("error-popup");
     const closePopupBtn = document.getElementById("close-popup-btn");
     let lastFocusedElement = null;
 
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            document.getElementById("splash").classList.add("fade-out");
-            document.getElementById("main-app").classList.add("show");
-            setTimeout(() => { seasonButtons[0].focus(); }, 500);
-        }, 4000); 
-    });
-
+    // Video Player Mantığı Güncellendi
     function playVideo(url) {
         if(!url) return;
         lastFocusedElement = document.activeElement;
+        
         videoContainer.style.display = "flex";
+        loadingText.style.display = "block"; // Video açılır açılmaz yazıyı göster
+        
         mainVideo.src = url;
         mainVideo.play();
+        mainVideo.focus();
     }
+
+    // Video oynamaya başladığı an yazıyı gizle
+    mainVideo.addEventListener("playing", () => {
+        loadingText.style.display = "none";
+    });
+
+    // Eğer internet yavaşlar ve video donarsa yazıyı tekrar göster
+    mainVideo.addEventListener("waiting", () => {
+        loadingText.style.display = "block";
+    });
 
     function showError() {
         lastFocusedElement = document.activeElement;
@@ -256,40 +324,72 @@
 
     document.addEventListener('keydown', (e) => {
         if (errorPopup.style.display === "flex") {
-            if (e.keyCode === 13) closePopupBtn.onclick();
-            e.preventDefault(); return;
+            if (e.keyCode === 13 || e.keyCode === 27 || e.keyCode === 8) { 
+                closePopupBtn.onclick();
+                e.preventDefault();
+            }
+            return;
         }
 
         if (videoContainer.style.display === "flex") {
             switch (e.keyCode) {
-                case 37: mainVideo.currentTime -= 10; e.preventDefault(); break;
-                case 39: mainVideo.currentTime += 10; e.preventDefault(); break;
-                case 13: mainVideo.paused ? mainVideo.play() : mainVideo.pause(); e.preventDefault(); break;
-                case 8: case 27:
-                    mainVideo.pause(); mainVideo.src = "";
+                case 37: 
+                    mainVideo.currentTime -= 10; 
+                    e.preventDefault(); 
+                    break;
+                case 39: 
+                    mainVideo.currentTime += 10; 
+                    e.preventDefault(); 
+                    break;
+                case 13: 
+                    mainVideo.paused ? mainVideo.play() : mainVideo.pause(); 
+                    e.preventDefault(); 
+                    break;
+                case 8: // Backspace
+                case 27: // Esc
+                case 10009: // TV Back button
+                    mainVideo.pause(); 
+                    mainVideo.src = "";
+                    loadingText.style.display = "none"; // Yazıyı gizle
                     videoContainer.style.display = "none";
                     if(lastFocusedElement) lastFocusedElement.focus();
-                    e.preventDefault(); break;
+                    e.preventDefault(); 
+                    break;
             }
         } else {
             const focused = document.activeElement;
-            if (focused.classList.contains('season-btn') && e.keyCode === 40) {
-                const firstEp = document.querySelector('.episode-card');
-                if(firstEp) firstEp.focus();
-                e.preventDefault();
-            } else if (focused.classList.contains('episode-card') && e.keyCode === 38) {
-                document.querySelector('.season-btn.active').focus();
-                e.preventDefault();
+            if (focused.classList.contains('season-btn')) {
+                if (e.keyCode === 40) { 
+                    const firstEp = document.querySelector('.episode-card');
+                    if(firstEp) firstEp.focus();
+                    e.preventDefault();
+                } else if (e.keyCode === 13) { 
+                    focused.click();
+                    e.preventDefault();
+                }
+            } else if (focused.classList.contains('episode-card')) {
+                if (e.keyCode === 38) { 
+                    document.querySelector('.season-btn.active').focus();
+                    e.preventDefault();
+                } else if (e.keyCode === 13) { 
+                    focused.click();
+                    e.preventDefault();
+                }
             }
         }
     });
 
     function loadSeason(season) {
         episodesEl.innerHTML = "";
-        if (season == "2") { showError(); return; }
+        if (season == "2") { 
+            showError(); 
+            return; 
+        }
+        
         (episodeData[season] || []).forEach(ep => {
             const div = document.createElement("div");
-            div.className = "episode-card"; div.tabIndex = 0;
+            div.className = "episode-card"; 
+            div.tabIndex = 0;
             div.innerHTML = `<span>${ep.name}</span>`;
             div.onclick = () => playVideo(ep.url);
             div.onfocus = () => div.scrollIntoView({ behavior: 'smooth', inline: 'center' });
@@ -301,11 +401,13 @@
         btn.onclick = () => {
             if (btn.dataset.season == "2") { showError(); return; }
             seasonButtons.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active"); loadSeason(btn.dataset.season);
+            btn.classList.add("active"); 
+            loadSeason(btn.dataset.season);
         };
     });
 
-    loadSeason(1); seasonButtons[0].classList.add("active");
+    loadSeason(1); 
+    seasonButtons[0].classList.add("active");
 </script>
 </body>
 </html>
