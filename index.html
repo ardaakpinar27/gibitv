@@ -1,251 +1,210 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GiBiTV - Android TV</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        body {
-            background: #000; color: #fff; font-family: 'Segoe UI', Arial, sans-serif;
-            width: 100vw; height: 100vh; overflow: hidden; user-select: none;
-            display: flex; flex-direction: column;
-        }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; }
 
-        /* === SPLASH SCREEN (GiBiTV) === */
-        #splash {
-            position: fixed; inset: 0; background: #000; z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            opacity: 1; visibility: visible; transition: opacity 0.8s ease;
-        }
+        /* SPLASH SCREEN (GiBiTV) */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: flex; gap: 10px; }
-        .splash-logo span {
-            font-size: 100px; font-weight: 900; color: #222; opacity: 0.2;
-            display: inline-block;
-        }
-        
-        /* Harf Parlama Efekti */
-        .animate-char {
-            animation: turnWhite 1.5s forwards !important;
-        }
-        @keyframes turnWhite { 
-            0% { color: #222; opacity: 0.2; } 
-            100% { color: #ffffff; opacity: 1; text-shadow: 0 0 30px rgba(255, 255, 255, 0.6); } 
-        }
+        .splash-logo span { font-size: 80px; font-weight: 900; color: #222; opacity: 0.2; animation: glow 1.5s forwards; }
+        @keyframes glow { to { color: #fff; opacity: 1; text-shadow: 0 0 30px rgba(255, 255, 255, 0.6); } }
+        @keyframes forceHide { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; }
+        .splash-logo span:nth-child(2) { animation-delay: 0.5s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.8s; }
+        .splash-logo span:nth-child(4) { animation-delay: 1.1s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.4s; }
+        .splash-logo span:nth-child(6) { animation-delay: 1.7s; }
 
-        /* === ANA UYGULAMA === */
+        /* UI */
         #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; }
-        .hero {
-            position: relative; flex: 1; width: 100%;
-            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center center / cover no-repeat;
-            display: flex; align-items: flex-end; padding-left: 60px; padding-bottom: 20px;
-        }
-        .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); z-index: 1; }
-        .cover-title { font-size: 50px; font-weight: bold; z-index: 5; text-shadow: 0 4px 20px rgba(0,0,0,1); }
-
-        .ui-footer { height: 300px; background: #000; display: flex; flex-direction: column; z-index: 10; }
+        .hero { position: relative; flex: 1; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
+        .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); }
+        .cover-title { font-size: 50px; font-weight: bold; z-index: 5; }
+        .ui-footer { height: 300px; background: #000; z-index: 10; display: flex; flex-direction: column; }
         .seasons { display: flex; gap: 10px; padding: 10px 60px; }
-        
-        /* BUTONLAR */
-        .season-btn { 
-            background: #1a1a1a; padding: 6px 14px; border-radius: 6px; font-size: 14px; 
-            color: #ccc; border: 3px solid transparent; transition: 0.2s; cursor: pointer;
-        }
-        .season-btn:focus { color: #fff !important; border-color: #f1c40f; transform: scale(1.05); }
+        .season-btn { background: #1a1a1a; padding: 6px 14px; border-radius: 6px; font-size: 14px; color: #ccc; border: 3px solid transparent; cursor: pointer; }
+        .season-btn:focus { border-color: #f1c40f; color: #fff; transform: scale(1.05); }
         .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
+        .episodes { display: flex; gap: 15px; padding: 10px 60px; overflow-x: auto; scrollbar-width: none; }
+        .episode-card { min-width: 200px; height: 110px; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: flex-end; flex-shrink: 0; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; cursor: pointer; }
+        .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); }
+        .episode-card span { padding: 10px; font-size: 12px; font-weight: 500; background: rgba(0,0,0,0.5); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        .episodes { display: flex; gap: 15px; padding: 10px 60px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; }
-        .episode-card {
-            min-width: 200px; height: 110px; border-radius: 8px; position: relative; 
-            overflow: hidden; display: flex; align-items: flex-end; flex-shrink: 0; transition: 0.2s; 
-            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center center / cover no-repeat;
-            cursor: pointer;
-        }
-        .episode-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%); z-index: 1; }
-        .episode-card span { position: relative; z-index: 2; padding: 10px; font-size: 12px; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
-        .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
-
-        /* PLAYER & SPINNER */
-        #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; justify-content: center; align-items: center; }
-        #loading-screen { position: absolute; inset: 0; background: #000; display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 10001; }
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255, 255, 255, 0.1); border-top: 4px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
+        /* LOADING & ERROR */
+        #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
+        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10001; display: none; }
+        .spinner { width: 50px; height: 50px; border: 4px solid rgba(255,255,255,0.1); border-top: 4px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         
-        video { width: 100%; height: 100%; background: #000; }
+        #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
+        .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; max-width: 400px; }
+        #close-popup-btn { background: #e50914; color: #fff; border: none; padding: 10px 30px; border-radius: 6px; font-size: 16px; margin-top: 15px; cursor: pointer; }
+        #close-popup-btn:focus { background: #fff; color: #000; outline: 4px solid #f1c40f; }
+
+        video { width: 100%; height: 100%; }
     </style>
 </head>
 <body>
 
-    <div id="splash">
-        <div class="splash-logo" id="logo-container">
-            <span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span>
+    <div id="splash"><div class="splash-logo"><span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span></div></div>
+
+    <div id="error-popup">
+        <div class="popup-content">
+            <h2 style="color:#e50914; margin-bottom:10px;">UYARI</h2>
+            <p>Bu sezonda teknik bir problem yaşanıyor. Daha sonra tekrar deneyin.</p>
+            <button id="close-popup-btn">Tamam</button>
         </div>
     </div>
 
-    <div id="video-player-container">
-        <div id="loading-screen"><div class="spinner"></div></div>
-        <video id="main-video"></video>
-    </div>
-
+    <div id="video-player-container"><div id="loading-screen"><div class="spinner"></div></div><video id="main-video"></video></div>
+    
     <div id="main-app">
         <div class="hero"><div class="cover-title">GiBiTV</div></div>
         <div class="ui-footer">
             <div class="seasons">
-                <div class="season-btn" tabindex="1" data-season="1">Sezon 1</div>
-                <div class="season-btn" tabindex="2" data-season="2">Sezon 2</div>
-                <div class="season-btn" tabindex="3" data-season="3">Sezon 3</div>
-                <div class="season-btn" tabindex="4" data-season="4">Sezon 4</div>
-                <div class="season-btn" tabindex="5" data-season="5">Sezon 5</div>
-                <div class="season-btn" tabindex="6" data-season="6">Sezon 6</div>
+                <button class="season-btn" data-season="1">Sezon 1</button>
+                <button class="season-btn" data-season="2">Sezon 2</button>
+                <button class="season-btn" data-season="3">Sezon 3</button>
+                <button class="season-btn" data-season="4">Sezon 4</button>
+                <button class="season-btn" data-season="5">Sezon 5</button>
+                <button class="season-btn" data-season="6">Sezon 6</button>
             </div>
             <div id="episodes" class="episodes"></div>
         </div>
     </div>
 
 <script>
-    // TÜM SEZONLAR VE TÜM LİNKLER GERİ GELDİ
     const episodeData = {
         1: [
-            { name: "Kokariç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4" },
-            { name: "Vatka", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/2%20-%20Vatka.mp4" },
-            { name: "Nü Model", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/3%20-%20N%C3%BC%20Model.mp4" },
-            { name: "Erasmus'la Gelen Yamyam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/4%20-%20Erasmuslu%20Yamyam.mp4" },
-            { name: "Yanlış Mentor", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5.mp4" },
-            { name: "Karanlık Güç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6%20-%20Karanl%C4%B1k%20G%C3%BC%C3%A7.mp4" },
-            { name: "İkinci Yol", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7.mp4" },
-            { name: "Badana", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8%20-%20Badana.mp4" },
-            { name: "Ayırtma Yenilemesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9%20-%20Ay%C4%B1rtma%20Yenilemesi.mp4" },
-            { name: "Kan Parası", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
-            { name: "Yılmaz Bey Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
-            { name: "Atın Bulunuşu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
+            { name: "1. Kokariç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4" },
+            { name: "2. Vatka", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/2%20-%20Vatka.mp4" },
+            { name: "3. Nü Model", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/3%20-%20N%C3%BC%20Model.mp4" },
+            { name: "4. Erasmus", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/4%20-%20Erasmuslu%20Yamyam.mp4" },
+            { name: "5. Mentor", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5.mp4" },
+            { name: "6. Güç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6%20-%20Karanl%C4%B1k%20G%C3%BC%C3%A7.mp4" },
+            { name: "7. Yol", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7.mp4" },
+            { name: "8. Badana", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8%20-%20Badana.mp4" },
+            { name: "9. Ayırtma", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9%20-%20Ay%C4%B1rtma%20Yenilemesi.mp4" },
+            { name: "10. Kan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
+            { name: "11. Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
+            { name: "12. At", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
         ],
-        2: [], 
         3: [
-            { name: "Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
-            { name: "Keskin Nişancı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4" },
-            { name: "Büfe", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.B%C3%B6l%C3%BCm%20B%C3%BCfe.mp4" },
-            { name: "Sınıfsal Veda", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.B%C3%B6l%C3%BCm%20S%C4%B1n%C4%B1fsal%20Veda.mp4" },
-            { name: "Mazbut Bir Hayat", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.B%C3%B6l%C3%BCm%20Mazbut%20Bir%20Hayat.mp4" },
-            { name: "Ghosting", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.B%C3%B6l%C3%BCm%20Ghosting.mp4" },
-            { name: "Teşekkürler", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.B%C3%B6l%C3%BCm%20Te%C5%9Fekk%C3%BCrler.mp4" },
-            { name: "Gülnuray", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.B%C3%B6l%C3%BCm%20G%C3%BClnuray.mp4" },
-            { name: "Bilanço", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.B%C3%B6l%C3%BCm%20Bilan%C3%A7o.mp4" },
-            { name: "Birinci Kabak", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.B%C3%B6l%C3%BCm%20Birinci%20Kabak.mp4" }
+            { name: "1. Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
+            { name: "2. Keskin Nişancı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4" },
+            { name: "3. Büfe", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.B%C3%B6l%C3%BCm%20B%C3%BCfe.mp4" },
+            { name: "4. Sınıfsal Veda", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.B%C3%B6l%C3%BCm%20S%C4%B1n%C4%B1fsal%20Veda.mp4" },
+            { name: "5. Mazbut Bir Hayat", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.B%C3%B6l%C3%BCm%20Mazbut%20Bir%20Hayat.mp4" },
+            { name: "6. Ghosting", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.B%C3%B6l%C3%BCm%20Ghosting.mp4" },
+            { name: "7. Teşekkürler", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.B%C3%B6l%C3%BCm%20Te%C5%9Fekk%C3%BCrler.mp4" },
+            { name: "8. Gülnuray", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.B%C3%B6l%C3%BCm%20G%C3%BClnuray.mp4" },
+            { name: "9. Bilanço", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.B%C3%B6l%C3%BCm%20Bilan%C3%A7o.mp4" },
+            { name: "10. Birinci Kabak", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.B%C3%B6l%C3%BCm%20Birinci%20Kabak.mp4" }
         ],
         4: [
-            { name: "Övgü", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.B%C3%B6l%C3%BCm%20%C3%96vg%C3%BC.mp4" },
-            { name: "Bin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.B%C3%B6l%C3%BCm%20Bin.mp4" },
-            { name: "Orta Yaş Krizi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.B%C3%B6l%C3%BCm%20Orta%20Ya%C5%9F%20Krizi.mp4" },
-            { name: "Kafa Nakli", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.B%C3%B6l%C3%BCm%20Kafa%20Nakli.mp4" },
-            { name: "Patern", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.B%C3%B6l%C3%BCm%20Patern.mp4" },
-            { name: "165", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.B%C3%B6l%C3%BCm%20165.mp4" },
-            { name: "Dönen Tekme", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.B%C3%B6l%C3%BCm%20D%C3%B6nen%20Tekme.mp4" },
-            { name: "Defter", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.B%C3%B6l%C3%BCm%20Defter.mp4" },
-            { name: "Dirty Talk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.B%C3%B6l%C3%BCm%20Dirty%20Talk.mp4" },
-            { name: "Eğitim Öğretim Yılı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.B%C3%B6l%C3%BCm%20E%C4%9E%C4%B0T%C4%B0M%20%C3%96%C4%9ERET%C4%B0M%20YILI.mp4" }
+            { name: "1. Övgü", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.B%C3%B6l%C3%BCm%20%C3%96vg%C3%BC.mp4" },
+            { name: "2. Bin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.B%C3%B6l%C3%BCm%20Bin.mp4" },
+            { name: "3. Orta Yaş Krizi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.B%C3%B6l%C3%BCm%20Orta%20Ya%C5%9F%20Krizi.mp4" },
+            { name: "4. Kafa Nakli", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.B%C3%B6l%C3%BCm%20Kafa%20Nakli.mp4" },
+            { name: "5. Patern", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.B%C3%B6l%C3%BCm%20Patern.mp4" },
+            { name: "6. 165", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.B%C3%B6l%C3%BCm%20165.mp4" },
+            { name: "7. Dönen Tekme", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.B%C3%B6l%C3%BCm%20D%C3%B6nen%20Tekme.mp4" },
+            { name: "8. Defter", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.B%C3%B6l%C3%BCm%20Defter.mp4" },
+            { name: "9. Dirty Talk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.B%C3%B6l%C3%BCm%20Dirty%20Talk.mp4" },
+            { name: "10. Eğitim Öğretim Yılı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.B%C3%B6l%C3%BCm%20E%C4%9E%C4%B0T%C4%B0M%20%C3%96%C4%9ERET%C4%B0M%20YILI.mp4" }
         ],
         5: [
-            { name: "Sinek", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4" },
-            { name: "Kahır", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4" },
-            { name: "Şako Bosphorus", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4" },
-            { name: "Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
-            { name: "Böbrek Taşı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4" },
-            { name: "Aşağılık Adam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4" },
-            { name: "Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
-            { name: "Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
-            { name: "İrade", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4" },
-            { name: "Geleceğin Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10%20-%20Gelece%C4%9Fin%20Habercisi%20Gen%C3%A7%20Yeti%C5%9Fkinler.mp4" },
-            { name: "Kenan Ticaret", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
-            { name: "Demir Kalenin Kuzgunları 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12%20-%20DEM%C4%B0R%20KALEN%C4%B0N%20KUZGUNLARI%201.mp4" },
-            { name: "Demir Kalenin Kuzgunları 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13%20-%20Demir%20Kalenin%20Kuzgunlar%C4%B1%202.mp4" }
+            { name: "1. Sinek", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4" },
+            { name: "2. Kahır", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4" },
+            { name: "3. Şako", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4" },
+            { name: "4. Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
+            { name: "5. Böbrek Taşı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4" },
+            { name: "6. Aşağılık Adam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4" },
+            { name: "7. Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
+            { name: "8. Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
+            { name: "9. İrade", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4" },
+            { name: "10. Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10.mp4" },
+            { name: "11. Kenan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
+            { name: "12. Demir Kale 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12.mp4" },
+            { name: "13. Demir Kale 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13.mp4" }
         ],
         6: [
-            { name: "Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
-            { name: "Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602%20%20-%20%20Mikrodalga.mp4" },
-            { name: "Girls' Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603%20-%20Girls%20Night%20Out.mp4" },
-            { name: "Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604%20-%20Metin.mp4" },
-            { name: "Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605%20Nomen%20est%20Omen.mp4" },
-            { name: "Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606%20%C3%87a%C4%9Fr%C4%B1.mp4" },
-            { name: "Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607%20-%20Gece%20Kaplanlar%C4%B1.mp4" },
-            { name: "Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608%20%C3%87%C3%B6l%20Defnesi.mp4" },
-            { name: "Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
-            { name: "İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
-            { name: "Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
-            { name: "Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
-            { name: "Yapılanlar 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x13.mp4" }
+            { name: "1. Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
+            { name: "2. Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4" },
+            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4" },
+            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604.mp4" },
+            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605.mp4" },
+            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606.mp4" },
+            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607.mp4" },
+            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608.mp4" },
+            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
+            { name: "10. İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
+            { name: "11. Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
+            { name: "12. Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
+            { name: "13. Yapılanlar 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x13.mp4" }
         ]
     };
 
-    const episodesEl = document.getElementById("episodes");
-    const seasonButtons = document.querySelectorAll(".season-btn");
-    const splash = document.getElementById("splash");
-    const vContainer = document.getElementById("video-player-container");
-    const vMain = document.getElementById("main-video");
-    const loader = document.getElementById("loading-screen");
+    const epEl = document.getElementById("episodes"), sBtns = document.querySelectorAll(".season-btn");
+    const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
+    const errPop = document.getElementById("error-popup"), closeErr = document.getElementById("close-popup-btn");
+    let lastFocus = null;
 
-    function initialize() {
-        // 1. Bölümleri hazırla
-        loadSeason(1);
-        seasonButtons[0].classList.add("active");
-
-        // 2. Harfleri tek tek yak (GiBiTV)
-        const spans = document.querySelectorAll("#logo-container span");
-        spans.forEach((span, index) => {
-            setTimeout(() => {
-                span.classList.add("animate-char");
-            }, (index + 1) * 350); 
-        });
-
-        // 3. Splash'i kaldır ve butonlara odaklan
-        setTimeout(() => {
-            splash.style.opacity = "0";
-            setTimeout(() => {
-                splash.style.display = "none";
-                seasonButtons[0].focus();
-            }, 800);
-        }, 4000);
-    }
-
-    // Android WebView için zorunlu tetikleyiciler
-    window.addEventListener('load', initialize);
-    if (document.readyState === 'complete') initialize();
-
-    function playVideo(url) {
-        if(!url) return;
-        vContainer.style.display = "flex";
-        loader.style.display = "flex";
-        vMain.src = url;
-        vMain.load();
-        vMain.onplaying = () => { loader.style.display = "none"; };
-        vMain.oncanplay = () => { vMain.play(); };
-    }
-
-    function loadSeason(season) {
-        episodesEl.innerHTML = "";
-        const data = episodeData[season] || [];
-        data.forEach(ep => {
-            const div = document.createElement("div");
-            div.className = "episode-card"; div.tabIndex = 0;
-            div.innerHTML = `<span>${ep.name}</span>`;
-            div.onclick = () => playVideo(ep.url);
-            div.onfocus = () => div.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-            episodesEl.appendChild(div);
+    function loadSeason(s) {
+        if (s == "2") {
+            lastFocus = document.activeElement;
+            errPop.style.display = "flex";
+            closeErr.focus();
+            return;
+        }
+        epEl.innerHTML = "";
+        (episodeData[s] || []).forEach(ep => {
+            const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
+            d.innerHTML = `<span>${ep.name}</span>`;
+            d.onclick = () => { 
+                lastFocus = d;
+                vCont.style.display = "flex"; loader.style.display = "flex";
+                vMain.src = ep.url; vMain.load();
+                vMain.onplaying = () => loader.style.display = "none";
+                vMain.oncanplay = () => vMain.play();
+            };
+            d.onfocus = () => d.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            epEl.appendChild(d);
         });
     }
 
-    seasonButtons.forEach(btn => {
-        btn.onclick = () => {
-            seasonButtons.forEach(b => b.classList.remove("active"));
+    function init() {
+        loadSeason(1); 
+        sBtns[0].classList.add("active");
+        setTimeout(() => { sBtns[0].focus(); }, 4600);
+    }
+
+    sBtns.forEach(btn => btn.onclick = () => {
+        const s = btn.dataset.season;
+        if(s !== "2") {
+            sBtns.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
-            loadSeason(btn.dataset.season);
-        };
+        }
+        loadSeason(s);
     });
 
+    closeErr.onclick = () => {
+        errPop.style.display = "none";
+        if(lastFocus) lastFocus.focus();
+    };
+
+    window.onload = init;
+
     document.addEventListener('keydown', (e) => {
-        if (vContainer.style.display === "flex") {
+        if (vCont.style.display === "flex") {
             if (e.keyCode === 8 || e.keyCode === 27) {
-                vMain.pause(); vMain.src = "";
-                vContainer.style.display = "none";
+                vMain.pause(); vMain.src = ""; vCont.style.display = "none";
+                if(lastFocus) lastFocus.focus();
                 e.preventDefault();
             }
         } else {
@@ -253,8 +212,10 @@
             if (focused.classList.contains('season-btn') && e.keyCode === 40) {
                 const firstEp = document.querySelector('.episode-card');
                 if(firstEp) firstEp.focus();
+                e.preventDefault();
             } else if (focused.classList.contains('episode-card') && e.keyCode === 38) {
                 document.querySelector('.season-btn.active').focus();
+                e.preventDefault();
             }
         }
     });
