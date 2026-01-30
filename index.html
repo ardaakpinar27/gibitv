@@ -53,6 +53,10 @@
 </head>
 <body>
 
+<audio id="login-sound" preload="auto">
+    <source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg">
+</audio>
+
 <div id="splash"><div class="splash-logo"><span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span></div></div>
 
 <div id="error-popup">
@@ -207,16 +211,27 @@
 
     document.getElementById("close-popup-btn").onclick = () => { document.getElementById("error-popup").style.display = "none"; if(lastFocus) lastFocus.focus(); };
 
-    window.onload = () => { loadSeason(1); sBtns[0].classList.add("active"); setTimeout(() => sBtns[0].focus(), 4600); };
+    window.onload = () => { 
+        loadSeason(1); 
+        sBtns[0].classList.add("active"); 
+        
+        // SES TETİKLEME: İlk harf yanar yanmaz (0.2s sonra)
+        setTimeout(() => {
+            const audio = document.getElementById("login-sound");
+            audio.play().catch(e => console.log("Ses oynatma hatası:", e));
+        }, 200);
+
+        setTimeout(() => sBtns[0].focus(), 4600); 
+    };
 
     document.addEventListener('keydown', (e) => {
         if (vCont.style.display === "flex") {
             showUI();
             switch(e.keyCode) {
-                case 13: e.preventDefault(); if(vMain.paused) vMain.play(); else vMain.pause(); break; // OK - DUR / BAŞLAT
-                case 39: vMain.currentTime += 10; break; // SAĞ
-                case 37: vMain.currentTime -= 10; break; // SOL
-                case 8: case 27: closeVideo(); e.preventDefault(); break; // GERİ
+                case 13: e.preventDefault(); if(vMain.paused) vMain.play(); else vMain.pause(); break;
+                case 39: vMain.currentTime += 10; break;
+                case 37: vMain.currentTime -= 10; break;
+                case 8: case 27: closeVideo(); e.preventDefault(); break;
             }
         } else if (document.getElementById("error-popup").style.display === "flex") {
             if (e.keyCode === 8 || e.keyCode === 13) { document.getElementById("close-popup-btn").onclick(); e.preventDefault(); }
