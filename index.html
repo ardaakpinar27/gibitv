@@ -38,7 +38,7 @@
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
         
-        #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transition: opacity 0.5s; }
+        #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transition: opacity 0.5s; opacity: 0; }
         .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
         #progress-bar { width: 0%; height: 100%; background: #f1c40f; transition: width 0.1s; }
         .time-info { font-size: 18px; font-weight: bold; text-align: right; text-shadow: 0 2px 4px #000; }
@@ -89,15 +89,15 @@
             { name: "1. Kokariç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4" },
             { name: "2. Vatka", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/2%20-%20Vatka.mp4" },
             { name: "3. Nü Model", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/3%20-%20N%C3%BC%20Model.mp4" },
-            { name: "4. Erasmus", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/4%20-%20Erasmuslu%20Yamyam.mp4" },
-            { name: "5. Mentor", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5.mp4" },
-            { name: "6. Güç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6%20-%20Karanl%C4%B1k%20G%C3%BC%C3%A7.mp4" },
-            { name: "7. Yol", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7.mp4" },
+            { name: "4. Erasmus'la Gelen Yamyam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/4%20-%20Erasmuslu%20Yamyam.mp4" },
+            { name: "5. Yanlış Mentor", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5.mp4" },
+            { name: "6. Karanlık Güç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6%20-%20Karanl%C4%B1k%20G%C3%BC%C3%A7.mp4" },
+            { name: "7. İkinci Yol", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7.mp4" },
             { name: "8. Badana", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8%20-%20Badana.mp4" },
-            { name: "9. Ayırtma", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9%20-%20Ay%C4%B1rtma%20Yenilemesi.mp4" },
-            { name: "10. Kan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
-            { name: "11. Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
-            { name: "12. At", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
+            { name: "9. Ayırtma Yenilemesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9%20-%20Ay%C4%B1rtma%20Yenilemesi.mp4" },
+            { name: "10. Kan Parası", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
+            { name: "11. Yılmaz Bey Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
+            { name: "12. Atın Bulunuşu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
         ],
         3: [
             { name: "1. Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
@@ -133,10 +133,10 @@
             { name: "7. Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
             { name: "8. Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
             { name: "9. İrade", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4" },
-            { name: "10. Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10.mp4" },
-            { name: "11. Kenan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
-            { name: "12. Demir Kale 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12.mp4" },
-            { name: "13. Demir Kale 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13.mp4" }
+            { name: "10. Geleceğin Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10.mp4" },
+            { name: "11. Kenan Ticaret", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
+            { name: "12. Demir Kalenin Kuzgunları 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12.mp4" },
+            { name: "13. Demir Kalenin Kuzgunları 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13.mp4" }
         ],
         6: [
             { name: "1. Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
@@ -213,7 +213,7 @@
         if (vCont.style.display === "flex") {
             showUI();
             switch(e.keyCode) {
-                case 13: e.preventDefault(); vMain.paused ? vMain.play() : vMain.pause(); break; // OK - DUR / BAŞLAT
+                case 13: e.preventDefault(); if(vMain.paused) vMain.play(); else vMain.pause(); break; // OK - DUR / BAŞLAT
                 case 39: vMain.currentTime += 10; break; // SAĞ
                 case 37: vMain.currentTime -= 10; break; // SOL
                 case 8: case 27: closeVideo(); e.preventDefault(); break; // GERİ
