@@ -60,7 +60,7 @@
 <div id="splash"><div class="splash-logo"><span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span></div></div>
 
 <div id="error-popup">
-    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>2. Sezon şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
+    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>Bu bölüm şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
 </div>
 
 <div id="video-player-container">
@@ -102,6 +102,18 @@
             { name: "10. Kan Parası", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10%20-%20Kan%20Paras%C4%B1.mp4" },
             { name: "11. Yılmaz Bey Banyo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11%20-%20Y%C4%B1lmaz%20Bey%20Banyo.mp4" },
             { name: "12. Atın Bulunuşu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12%20-%20At%C4%B1n%20Bulunu%C5%9Fu.mp4" }
+        ],
+        2: [
+            { name: "1. Vücutçu Yalvaç", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/1.mp4" },
+            { name: "2. Kuki", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/2.mp4" },
+            { name: "3. Bej", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/3.mp4" },
+            { name: "4. Sokak Röportajı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/4.mp4" },
+            { name: "5. Çaça ve Cosplay", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/5.mp4" },
+            { name: "6. İki İçi Dışı Bir Kişi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/6.mp4" },
+            { name: "7. Gelin Başı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/7.mp4" },
+            { name: "8. Resimdeki Ünlü", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/8.mp4" },
+            { name: "9. Eşref Hidayet Gürdal Kültür Merkezi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/9.mp4" },
+            { name: "10. Vita Brevis", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/10.mp4" }
         ],
         3: [
             { name: "1. Sarışın ve Kotlu", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.B%C3%B6l%C3%BCm%20Sar%C4%B1%C5%9F%C4%B1n%20Ve%20Kotlu.mp4" },
@@ -187,12 +199,13 @@
     };
 
     function loadSeason(s) {
-        if (s == "2") { lastFocus = document.activeElement; document.getElementById("error-popup").style.display = "flex"; document.getElementById("close-popup-btn").focus(); return; }
         epEl.innerHTML = "";
-        (episodeData[s] || []).forEach(ep => {
+        const episodes = episodeData[s] || [];
+        episodes.forEach(ep => {
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
             d.onclick = () => { 
+                if(!ep.url) { lastFocus = d; document.getElementById("error-popup").style.display = "flex"; document.getElementById("close-popup-btn").focus(); return; }
                 lastFocus = d; vCont.style.display = "flex"; loader.style.display = "flex";
                 vMain.src = ep.url; vMain.load(); notifyAndroid(true);
                 vMain.onplaying = () => { loader.style.display = "none"; showUI(); };
@@ -205,7 +218,7 @@
 
     sBtns.forEach(btn => btn.onclick = () => {
         sBtns.forEach(b => b.classList.remove("active"));
-        if(btn.dataset.season !== "2") btn.classList.add("active");
+        btn.classList.add("active");
         loadSeason(btn.dataset.season);
     });
 
@@ -215,10 +228,9 @@
         loadSeason(1); 
         sBtns[0].classList.add("active"); 
         
-        // SES TETİKLEME: İlk harf yanar yanmaz (0.2s sonra)
         setTimeout(() => {
             const audio = document.getElementById("login-sound");
-            audio.play().catch(e => console.log("Ses oynatma hatası:", e));
+            audio.play().catch(e => console.log("Ses hatası:", e));
         }, 200);
 
         setTimeout(() => sBtns[0].focus(), 4600); 
