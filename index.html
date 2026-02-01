@@ -50,10 +50,14 @@
         #progress-fill { width: 0%; height: 100%; background: #f1c40f; }
         
         .controls-row { display: flex; align-items: center; justify-content: space-between; }
-        .player-buttons { display: flex; gap: 20px; align-items: center; }
-        .ctrl-btn { background: transparent; border: 2px solid #fff; color: #fff; font-size: 20px; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .ctrl-btn:focus { border-color: #f1c40f; color: #f1c40f; transform: scale(1.1); background: rgba(255,255,255,0.1); }
-        .time-info { font-size: 20px; font-weight: bold; font-variant-numeric: tabular-nums; }
+        .player-buttons { display: flex; gap: 30px; align-items: center; }
+        
+        /* GÜNCELLENEN BUTON STİLLERİ */
+        .ctrl-btn { background: transparent; border: 3px solid transparent; padding: 5px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; }
+        .ctrl-btn img { width: 50px; height: 50px; object-fit: contain; }
+        .ctrl-btn:focus { border-color: #f1c40f; background: rgba(255,255,255,0.1); transform: scale(1.15); }
+        
+        .time-info { font-size: 24px; font-weight: bold; font-variant-numeric: tabular-nums; }
 
         /* === EXIT POPUP === */
         #exit-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; justify-content: center; align-items: center; }
@@ -101,9 +105,15 @@
         <div class="progress-bar-container"><div id="progress-fill"></div></div>
         <div class="controls-row">
             <div class="player-buttons">
-                <button id="btn-rewind" class="ctrl-btn">⏪ 10s</button>
-                <button id="btn-play" class="ctrl-btn">⏯ Oynat/Durdur</button>
-                <button id="btn-forward" class="ctrl-btn">10s ⏩</button>
+                <button id="btn-rewind" class="ctrl-btn">
+                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forwardback.png" alt="Geri">
+                </button>
+                <button id="btn-play" class="ctrl-btn">
+                    <img id="img-play-pause" src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png" alt="Oynat">
+                </button>
+                <button id="btn-forward" class="ctrl-btn">
+                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forward.png" alt="İleri">
+                </button>
             </div>
             <div class="time-info">
                 <span id="current-time">00:00</span> / <span id="duration-time">00:00</span>
@@ -123,7 +133,7 @@
 </div>
 
 <script>
-    // --- VERİ TABANI (1-6 TÜM SEZONLAR EKSİKSİZ) ---
+    // --- VERİ TABANI: 1-6 TÜM SEZONLAR EKLENDİ ---
     const episodeData = {
         1: [
             {name:"1. Kokariç", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4"},
@@ -153,27 +163,27 @@
         ],
         3: [
             {name:"1. Sarışın ve Kotlu", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.mp4"},
-            {name:"2. Keskin Nişancı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.mp4"},
-            {name:"3. Büfe", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.mp4"},
-            {name:"4. Sınıfsal Veda", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.mp4"},
-            {name:"5. Mazbut Bir Hayat", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.mp4"},
-            {name:"6. Ghosting", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.mp4"},
-            {name:"7. Teşekkürler", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.mp4"},
-            {name:"8. Gülnuray", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.mp4"},
-            {name:"9. Bilanço", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.mp4"},
-            {name:"10. Birinci Kabak", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.mp4"}
+            {name:"2. Keskin Nişancı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4"},
+            {name:"3. Büfe", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.B%C3%B6l%C3%BCm%20B%C3%BCfe.mp4"},
+            {name:"4. Sınıfsal Veda", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.B%C3%B6l%C3%BCm%20S%C4%B1n%C4%B1fsal%20Veda.mp4"},
+            {name:"5. Mazbut Bir Hayat", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.B%C3%B6l%C3%BCm%20Mazbut%20Bir%20Hayat.mp4"},
+            {name:"6. Ghosting", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.B%C3%B6l%C3%BCm%20Ghosting.mp4"},
+            {name:"7. Teşekkürler", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.B%C3%B6l%C3%BCm%20Te%C5%9Fekk%C3%BCrler.mp4"},
+            {name:"8. Gülnuray", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.B%C3%B6l%C3%BCm%20G%C3%BClnuray.mp4"},
+            {name:"9. Bilanço", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.B%C3%B6l%C3%BCm%20Bilan%C3%A7o.mp4"},
+            {name:"10. Birinci Kabak", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.B%C3%B6l%C3%BCm%20Birinci%20Kabak.mp4"}
         ],
         4: [
-            {name:"1. Övgü", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.mp4"},
-            {name:"2. Bin", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.mp4"},
-            {name:"3. Orta Yaş Krizi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.mp4"},
-            {name:"4. Kafa Nakli", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.mp4"},
-            {name:"5. Patern", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.mp4"},
-            {name:"6. 165", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.mp4"},
-            {name:"7. Dönen Tekme", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.mp4"},
-            {name:"8. Defter", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.mp4"},
-            {name:"9. Dirty Talk", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.mp4"},
-            {name:"10. Eğitim Öğretim", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.mp4"}
+            {name:"1. Övgü", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.B%C3%B6l%C3%BCm%20%C3%96vg%C3%BC.mp4"},
+            {name:"2. Bin", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.B%C3%B6l%C3%BCm%20Bin.mp4"},
+            {name:"3. Orta Yaş Krizi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.B%C3%B6l%C3%BCm%20Orta%20Ya%C5%9F%20Krizi.mp4"},
+            {name:"4. Kafa Nakli", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.B%C3%B6l%C3%BCm%20Kafa%20Nakli.mp4"},
+            {name:"5. Patern", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.B%C3%B6l%C3%BCm%20Patern.mp4"},
+            {name:"6. 165", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.B%C3%B6l%C3%BCm%20165.mp4"},
+            {name:"7. Dönen Tekme", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.B%C3%B6l%C3%BCm%20D%C3%B6nen%20Tekme.mp4"},
+            {name:"8. Defter", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.B%C3%B6l%C3%BCm%20Defter.mp4"},
+            {name:"9. Dirty Talk", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.B%C3%B6l%C3%BCm%20Dirty%20Talk.mp4"},
+            {name:"10. Eğitim Öğretim", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.B%C3%B6l%C3%BCm%20E%C4%9E%C4%B0T%C4%B0M%20%C3%96%C4%9ERET%C4%B0M%20YILI.mp4"}
         ],
         5: [
             {name:"1. Sinek", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4"},
@@ -211,6 +221,12 @@
     const pUI = document.getElementById("player-ui"), pFill = document.getElementById("progress-fill");
     const cTime = document.getElementById("current-time"), dTime = document.getElementById("duration-time");
     const btnPlay = document.getElementById("btn-play"), btnRew = document.getElementById("btn-rewind"), btnFwd = document.getElementById("btn-forward");
+    const imgPlayPause = document.getElementById("img-play-pause");
+    
+    // GÖRSEL URL TANIMLARI
+    const urlPlay = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/play.png";
+    const urlPause = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png";
+
     let lastFocus, uiTimer;
 
     function formatTime(s) { let m=Math.floor(s/60), sec=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec); }
@@ -232,13 +248,13 @@
         });
     }
 
-    // --- PLAYER BUTONLARI ---
+    // --- PLAYER KONTROLLERİ ---
     btnPlay.onclick = () => { vMain.paused ? vMain.play() : vMain.pause(); };
     btnRew.onclick = () => { vMain.currentTime -= 10; };
     btnFwd.onclick = () => { vMain.currentTime += 10; };
 
-    vMain.onplaying = () => { loader.style.display="none"; btnPlay.innerHTML = "⏸"; showUI(); };
-    vMain.onpause = () => { btnPlay.innerHTML = "▶"; showUI(); };
+    vMain.onplaying = () => { loader.style.display="none"; imgPlayPause.src = urlPause; showUI(); };
+    vMain.onpause = () => { imgPlayPause.src = urlPlay; showUI(); };
     vMain.ontimeupdate = () => {
         let per = (vMain.currentTime / vMain.duration) * 100;
         pFill.style.width = per + "%";
@@ -261,13 +277,13 @@
         setTimeout(() => document.querySelectorAll(".season-btn")[0].focus(), 4600); 
     };
 
-    // --- NAVİGASYON ---
+    // --- NAVİGASYON MANTIĞI ---
     window.addEventListener('keydown', function(e) {
         const focused = document.activeElement;
         const isVideoOpen = vCont.style.display === "flex";
         const isExitOpen = document.getElementById("exit-popup").style.display === "flex";
 
-        // 1. GERİ TUŞU (VIDEO -> MENÜ -> EXIT POPUP -> CLOSE APP)
+        // 1. GERİ TUŞU YÖNETİMİ
         if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             e.preventDefault();
             if (isVideoOpen) {
@@ -282,31 +298,24 @@
             return;
         }
 
-        // 2. VIDEO PLAYER KONTROLLERİ (DPAD)
+        // 2. VİDEO PLAYER İÇİ KONTROL
         if (isVideoOpen) {
             showUI();
             if (e.keyCode === 37) { // SOL
-                if (focused === btnRew || focused === btnPlay || focused === btnFwd) {
-                    // Butonlar arasında geziyorsa varsayılan davranış
-                } else {
-                    vMain.currentTime -= 10; // Değilse direkt sar
-                }
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
+               else { vMain.currentTime -= 10; }
             }
             if (e.keyCode === 39) { // SAĞ
-                if (focused === btnRew || focused === btnPlay || focused === btnFwd) {
-                    // Butonlar arasında geziyorsa varsayılan davranış
-                } else {
-                    vMain.currentTime += 10; // Değilse direkt sar
-                }
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
+               else { vMain.currentTime += 10; }
             }
-            if (e.keyCode === 13 && !focused.classList.contains('ctrl-btn')) { 
-                // Odak butonda değilse OK tuşu videoyu durdur/başlat
+            if (e.keyCode === 13 && !focused.classList.contains('ctrl-btn')) { // OK
                 vMain.paused ? vMain.play() : vMain.pause(); 
             }
             return;
         }
 
-        // 3. EXIT POPUP KONTROLLERİ
+        // 3. EXIT POPUP KONTROLÜ
         if (isExitOpen) {
             if (e.keyCode === 37) document.getElementById("exit-confirm").focus();
             if (e.keyCode === 39) document.getElementById("exit-cancel").focus();
