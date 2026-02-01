@@ -5,50 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        /* Dikey uzamayı engellemek için body yüksekliğini kilitledik */
         body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; display: flex; }
 
         /* === SPLASH SCREEN (SARI ARKA PLAN & SİYAH FONT) === */
         #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: flex; gap: 10px; }
         .splash-logo span { font-size: 80px; font-weight: 900; color: #000; opacity: 0; animation: glowBlack 1.5s forwards; }
-        
-        @keyframes glowBlack { 
-            to { opacity: 1; text-shadow: 0 0 15px rgba(0, 0, 0, 0.2); } 
-        }
+        @keyframes glowBlack { to { opacity: 1; text-shadow: 0 0 15px rgba(0, 0, 0, 0.2); } }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; pointer-events: none; } }
-        
-        /* Harf Animasyon Zamanlamaları */
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } 
-        .splash-logo span:nth-child(2) { animation-delay: 0.5s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.8s; } 
-        .splash-logo span:nth-child(4) { animation-delay: 1.1s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.4s; } 
-        .splash-logo span:nth-child(6) { animation-delay: 1.7s; }
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } .splash-logo span:nth-child(2) { animation-delay: 0.5s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.8s; } .splash-logo span:nth-child(4) { animation-delay: 1.1s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.4s; } .splash-logo span:nth-child(6) { animation-delay: 1.7s; }
         .splash-logo span:nth-child(7) { animation-delay: 2.0s; }
 
         /* === YAN MENÜ (SIDEBAR) === */
         #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         #sidebar:focus-within { width: 260px; }
-        
         .menu-items { flex: 1; padding-top: 40px; }
         .menu-item { display: flex; align-items: center; padding: 15px 20px; cursor: pointer; color: #000; transition: 0.2s; white-space: nowrap; border-left: 5px solid transparent; margin-bottom: 15px; }
         .menu-item:focus { background: rgba(0,0,0,0.1); border-left-color: #000; outline: none; transform: scale(1.05); }
-        
         .menu-icon { width: 35px; height: 35px; object-fit: contain; margin-right: 25px; filter: brightness(0); }
         .menu-text { font-size: 19px; font-weight: 800; opacity: 0; transition: opacity 0.2s; text-transform: uppercase; color: #000; }
         #sidebar:focus-within .menu-text { opacity: 1; }
-        
         .settings-item { margin-top: auto; margin-bottom: 30px; }
 
-        /* === ANA İÇERİK ALANI === */
-        #main-app { flex: 1; margin-left: 80px; display: flex; flex-direction: column; transition: filter 0.3s; }
+        /* === ANA İÇERİK ALANI (FIXED LAYOUT) === */
+        #main-app { position: absolute; left: 80px; right: 0; top: 0; bottom: 0; display: flex; flex-direction: column; transition: filter 0.3s; overflow: hidden; }
         #sidebar:focus-within ~ #main-app { filter: brightness(0.3); pointer-events: none; }
 
-        .hero { position: relative; flex: 1; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
+        .hero { position: relative; height: 60vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
         .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); }
         .cover-title { font-size: 50px; font-weight: bold; z-index: 5; text-shadow: 0 4px 20px #000; }
 
-        .ui-footer { height: 300px; background: #000; z-index: 10; display: flex; flex-direction: column; }
+        .ui-footer { flex: 1; background: #000; z-index: 10; display: flex; flex-direction: column; overflow: hidden; }
         .seasons { display: flex; gap: 10px; padding: 10px 60px; }
         .season-btn { background: #1a1a1a; padding: 6px 14px; border-radius: 6px; font-size: 14px; color: #ccc; border: 3px solid transparent; cursor: pointer; }
         .season-btn:focus { border-color: #f1c40f; color: #fff; transform: scale(1.05); }
