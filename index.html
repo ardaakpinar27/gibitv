@@ -23,7 +23,7 @@
             inset: 0; 
             background: #f1c40f; 
             z-index: 9999; 
-            display: flex; /* JS ile kontrol edilecek */
+            display: flex;
             justify-content: center; 
             align-items: center; 
             pointer-events: none;
@@ -33,7 +33,6 @@
         @keyframes glowBlack { to { opacity: 1; } }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; } }
         
-        /* Animasyon Sınıfı */
         .animate-splash { animation: forceHide 0.5s forwards 4.5s; }
         .hide-splash { display: none !important; }
 
@@ -111,13 +110,14 @@
     const exitPop = document.getElementById("exit-popup");
     let lastFocus;
 
-    // --- GİBİ DİZİSİNİ AÇAN FONKSİYON (RAW LINK) ---
+    // --- GİBİ DİZİSİNİ AÇAN FONKSİYON ---
     function openGibi() {
         // Geri döndüğümüzde Splash çıkmasın diye LocalStorage'a not düşüyoruz
         localStorage.setItem("edm_app_started", "true");
         
-        // Verdiğin RAW linke gidiyor
-        window.location.href = "https://raw.githubusercontent.com/ardaakpinar27/gibitv/refs/heads/main/series.html";
+        // ÖNEMLİ: raw.githack.com kullanarak RAW kodu HTML olarak render ediyoruz.
+        // Senin verdiğin linki "text" olmaktan çıkarıp "web sayfası" yapıyor.
+        window.location.href = "https://raw.githack.com/ardaakpinar27/gibitv/main/series.html";
     }
 
     // --- BUTON İŞLEVLERİ ---
@@ -126,17 +126,16 @@
 
     // --- AÇILIŞ MANTIĞI (SPLASH KONTROL) ---
     window.onload = () => {
-        // Eğer daha önce açıldıysa Splash gösterme
-        if (localStorage.getItem("edm_app_started") === "true") {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Eğer URL parametresi veya LocalStorage varsa Splash gösterme
+        if (localStorage.getItem("edm_app_started") === "true" || urlParams.get('back') === 'true') {
             splash.classList.add("hide-splash");
-            // Direkt karta odaklan
             setTimeout(() => { document.getElementById("card-gibi").focus(); }, 200);
         } else {
-            // İlk açılış: Animasyon oynat
             splash.classList.add("animate-splash");
             document.getElementById("login-sound").play().catch(e=>{});
-            localStorage.setItem("edm_app_started", "true"); // Kaydet
-            // Animasyon bitince odaklan
+            localStorage.setItem("edm_app_started", "true"); 
             setTimeout(() => { document.getElementById("nav-diziler").focus(); }, 4600);
         }
     };
