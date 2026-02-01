@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gibi - EDMORTV</title>
     <style>
-        /* === 4K & TV UYUMLU KİBAR TASARIM === */
+        /* === TEMEL AYARLAR (4K UYUMLU) === */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { 
             background: #000; 
@@ -24,27 +24,20 @@
             pointer-events: none; animation: forceHide 0.5s forwards 4.5s; 
         }
         .splash-logo span { 
-            font-size: 8vw; /* Ekran genişliğine göre */
-            font-weight: 900; color: #000; opacity: 0; 
+            font-size: 8vw; font-weight: 900; color: #000; opacity: 0; 
             display: inline-block; animation: glowBlack 1.2s forwards; 
         }
         @keyframes glowBlack { to { opacity: 1; } }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; } }
         
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } 
-        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } 
-        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } 
-        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
-        .splash-logo span:nth-child(7) { animation-delay: 1.4s; }
+        .splash-logo span:nth-child(n) { animation-delay: calc(var(--i) * 0.2s); }
 
         /* === ANA ARAYÜZ === */
         #main-app { position: fixed; inset: 0; display: flex; flex-direction: column; background: #000; }
         
-        /* Kapak (Hero) - Daha kompakt */
+        /* Kapak (Hero) */
         .hero { 
-            position: relative; width: 100%; height: 45vh; /* Ekranın %45'i */
+            position: relative; width: 100%; height: 45vh; 
             background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover no-repeat; 
             display: flex; align-items: flex-end; padding: 2vh 4vw;
         }
@@ -52,50 +45,42 @@
             content: ""; position: absolute; inset: 0; 
             background: linear-gradient(to bottom, transparent 20%, #000 100%); 
         }
-        .cover-title { 
-            font-size: 5vw; /* 4K'da devasa olmaması için vw */
-            font-weight: 900; z-index: 5; text-shadow: 0 4px 20px #000; color: #fff; letter-spacing: 2px; 
-        }
+        .cover-title { font-size: 5vw; font-weight: 900; z-index: 5; text-shadow: 0 0.5vh 2vh #000; color: #fff; letter-spacing: 0.2vw; }
 
         /* İçerik Alanı */
-        .content-area { flex: 1; display: flex; flex-direction: column; padding: 0 4vw 4vh 4vw; z-index: 10; }
+        .content-area { flex: 1; display: flex; flex-direction: column; padding: 0 4vw 4vh 4vw; z-index: 10; justify-content: center; }
 
-        /* --- SEZON LİSTESİ (KİBARLAŞTIRILDI) --- */
+        /* --- SEZON LİSTESİ (KİBAR & OVAL) --- */
         .seasons-row { 
-            display: flex; gap: 1vw; margin-bottom: 2vh; overflow-x: auto; padding: 1vh 0.5vw; 
+            display: flex; gap: 1vw; margin-bottom: 3vh; overflow-x: auto; padding: 1vh 0.5vw; 
             align-items: center; white-space: nowrap; scrollbar-width: none;
         }
         
         .season-btn { 
             background: #1a1a1a; color: #bbb; 
-            height: 6vh; /* Yükseklik ekranın %6'sı */
-            padding: 0 2vw; 
-            border-radius: 6vh; /* Tam oval */
-            font-size: 1.8vh; /* Font ekran yüksekliğine göre */
-            font-weight: 700; 
+            height: 6vh; padding: 0 2.5vw; border-radius: 6vh; 
+            font-size: 1.8vh; font-weight: 700; 
             border: 0.3vh solid transparent; cursor: pointer; 
             display: flex; align-items: center; justify-content: center;
             transition: all 0.2s ease; flex-shrink: 0;
         }
         .season-btn:focus { 
             border-color: #f1c40f; color: #fff; background: #333; transform: scale(1.05); 
-            box-shadow: 0 0 1vw rgba(241, 196, 15, 0.4);
+            box-shadow: 0 0 1.5vh rgba(241, 196, 15, 0.4);
         }
         .season-btn.active { 
             background: #f1c40f; color: #000; border-color: #f1c40f; 
         }
 
-        /* --- BÖLÜM LİSTESİ (KİBARLAŞTIRILDI) --- */
+        /* --- BÖLÜM LİSTESİ (KİBAR & MERKEZLİ) --- */
         .episodes-row { 
             display: flex; gap: 1.5vw; overflow-x: auto; 
-            padding: 2vh 0.5vw; height: 100%; align-items: center;
+            padding: 2vh 0.5vw; height: 25vh; align-items: center;
             scrollbar-width: none;
         }
 
         .episode-card { 
-            min-width: 18vw; /* Genişlik ekranın %18'i */
-            height: 18vh;    /* Yükseklik ekranın %18'i */
-            border-radius: 1.5vh; 
+            min-width: 18vw; height: 18vh; border-radius: 1.5vh; 
             background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; 
             border: 0.4vh solid transparent; display: flex; align-items: flex-end; 
             flex-shrink: 0; cursor: pointer; transition: transform 0.2s, border-color 0.2s; position: relative;
@@ -106,7 +91,7 @@
             box-shadow: 0 1vh 3vh rgba(0,0,0,0.9); 
         }
         .episode-name { 
-            width: 100%; padding: 1.5vh; 
+            width: 100%; padding: 1.2vh; 
             background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.6)); 
             color: #fff; font-size: 1.6vh; font-weight: 600; text-align: center;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -148,7 +133,11 @@
 
 <audio id="login-sound"><source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg"></audio>
 
-<div id="splash"><div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div></div>
+<div id="splash">
+    <div class="splash-logo">
+        <span style="--i:1">E</span><span style="--i:2">D</span><span style="--i:3">M</span><span style="--i:4">O</span><span style="--i:5">R</span><span style="--i:6">T</span><span style="--i:7">V</span>
+    </div>
+</div>
 
 <div id="main-app">
     <div class="hero"><div class="cover-title">GİBİ</div></div>
@@ -194,7 +183,7 @@
 </div>
 
 <script>
-    // --- VERİTABANI: 1-6 TAM SEZON ---
+    // --- VERİTABANI: 1-6 TAM EKSİKSİZ ---
     const allEpisodes = {
         1: [
             {n:"1. Kokariç", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4"},
@@ -291,6 +280,7 @@
     const btnYes = document.getElementById("exit-yes");
     const btnNo = document.getElementById("exit-no");
     
+    // GÖRSELLER
     const ICON_PLAY = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/play.png";
     const ICON_PAUSE = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png";
 
@@ -309,7 +299,7 @@
         uiTimer = setTimeout(() => { pUI.style.opacity = 0; }, 4000);
     }
 
-    // --- MERKEZLEME VE KAYDIRMA (FIXED) ---
+    // --- MERKEZLEME VE KAYDIRMA ---
     function handleFocus(el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
@@ -322,10 +312,7 @@
             card.className = "episode-card";
             card.tabIndex = 0;
             card.innerHTML = `<div class="episode-name">${ep.n}</div>`;
-            
-            // Odaklanınca ortala
             card.onfocus = () => handleFocus(card);
-
             card.onclick = () => {
                 lastFocus = card;
                 openPlayer(ep.u);
@@ -365,15 +352,17 @@
         durTime.innerText = formatTime(vMain.duration);
     };
 
+    // --- EXIT POPUP ---
     btnNo.onclick = () => { popup.style.display = "none"; if(lastFocus) lastFocus.focus(); };
     btnYes.onclick = () => { 
         if(window.AndroidBridge) window.AndroidBridge.closeApp(); 
         else window.close(); 
     };
 
+    // --- SEZON BUTONLARI ---
     const sBtns = document.querySelectorAll(".season-btn");
     sBtns.forEach(btn => {
-        btn.onfocus = () => handleFocus(btn); // Sezonlar da ortalansın
+        btn.onfocus = () => handleFocus(btn);
         btn.onclick = () => {
             sBtns.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
@@ -381,6 +370,7 @@
         };
     });
 
+    // --- BAŞLANGIÇ ---
     window.onload = () => {
         loadSeason(1);
         sBtns[0].classList.add("active");
@@ -388,56 +378,93 @@
         setTimeout(() => sBtns[0].focus(), 4600);
     };
 
-    // --- D-PAD NAVİGASYON (Geri Tuşu & Merkezleme) ---
+    // --- NAVİGASYON (MANUEL KONTROL) ---
     window.addEventListener('keydown', function(e) {
         const focused = document.activeElement;
         const isVideo = vCont.style.display === "flex";
         const isPopup = popup.style.display === "flex";
 
-        // GERİ TUŞU YÖNETİMİ
+        // --- KRİTİK DÜZELTME: GERİ TUŞU KONTROLÜ ---
         if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             e.preventDefault();
+            
             if (isVideo) {
-                closePlayer(); // 1. Video varsa kapat
-            } else if (isPopup) {
-                btnNo.click(); // 2. Popup varsa kapat
-            } else {
-                lastFocus = focused;
-                popup.style.display = "flex"; // 3. Hiçbiri yoksa Çıkış Sor
-                btnNo.focus();
-            }
+                // 1. ÖNCELİK: Video açıksa SADECE videoyu kapat.
+                closePlayer();
+                return; // Kodu burada durdur! Aşağı inmesin.
+            } 
+            
+            if (isPopup) {
+                // 2. ÖNCELİK: Popup açıksa popup'ı kapat.
+                btnNo.click();
+                return; // Durdur.
+            } 
+            
+            // 3. ÖNCELİK: Hiçbiri yoksa Çıkış Popup'ını aç.
+            lastFocus = focused;
+            popup.style.display = "flex";
+            btnNo.focus();
             return;
         }
 
+        // --- POPUP NAVİGASYONU ---
         if (isPopup) {
             if (e.keyCode === 37) btnYes.focus();
             if (e.keyCode === 39) btnNo.focus();
             return;
         }
 
+        // --- VIDEO PLAYER NAVİGASYONU ---
         if (isVideo) {
             showUI();
-            if (e.keyCode === 37 && !focused.classList.contains("ctrl-btn")) vMain.currentTime -= 10;
-            if (e.keyCode === 39 && !focused.classList.contains("ctrl-btn")) vMain.currentTime += 10;
-            if (e.keyCode === 13 && !focused.classList.contains("ctrl-btn")) vMain.paused ? vMain.play() : vMain.pause();
-            
-            if (e.keyCode === 37 && focused === btnPlay) document.getElementById("btn-rew").focus();
-            if (e.keyCode === 39 && focused === btnPlay) document.getElementById("btn-fwd").focus();
-            if (e.keyCode === 39 && focused === document.getElementById("btn-rew")) btnPlay.focus();
-            if (e.keyCode === 37 && focused === document.getElementById("btn-fwd")) btnPlay.focus();
+            if (e.keyCode === 13 && !focused.classList.contains("ctrl-btn")) {
+                vMain.paused ? vMain.play() : vMain.pause();
+            }
+            if (!focused.classList.contains("ctrl-btn")) {
+                if (e.keyCode === 37) vMain.currentTime -= 10;
+                if (e.keyCode === 39) vMain.currentTime += 10;
+            } else {
+                if (e.keyCode === 37) { 
+                    if (focused === btnPlay) document.getElementById("btn-rew").focus();
+                    if (focused === document.getElementById("btn-fwd")) btnPlay.focus();
+                }
+                if (e.keyCode === 39) { 
+                    if (focused === document.getElementById("btn-rew")) btnPlay.focus();
+                    if (focused === btnPlay) document.getElementById("btn-fwd").focus();
+                }
+            }
             return;
         }
 
-        // ANA EKRAN GEZİNTİSİ
+        // --- ANA EKRAN NAVİGASYONU (KAYDIRMA) ---
         if (focused.classList.contains("season-btn")) {
-            if (e.keyCode === 39) { e.preventDefault(); if(focused.nextElementSibling) focused.nextElementSibling.focus(); }
-            if (e.keyCode === 37) { e.preventDefault(); if(focused.previousElementSibling) focused.previousElementSibling.focus(); }
-            if (e.keyCode === 40) { e.preventDefault(); const firstEp = document.querySelector(".episode-card"); if(firstEp) firstEp.focus(); }
+            if (e.keyCode === 39) { 
+                e.preventDefault(); 
+                if(focused.nextElementSibling) focused.nextElementSibling.focus(); 
+            }
+            if (e.keyCode === 37) { 
+                e.preventDefault(); 
+                if(focused.previousElementSibling) focused.previousElementSibling.focus(); 
+            }
+            if (e.keyCode === 40) { 
+                e.preventDefault(); 
+                const firstEp = document.querySelector(".episode-card");
+                if(firstEp) firstEp.focus(); 
+            }
         }
         else if (focused.classList.contains("episode-card")) {
-            if (e.keyCode === 39) { e.preventDefault(); if(focused.nextElementSibling) focused.nextElementSibling.focus(); }
-            if (e.keyCode === 37) { e.preventDefault(); if(focused.previousElementSibling) focused.previousElementSibling.focus(); }
-            if (e.keyCode === 38) { e.preventDefault(); document.querySelector(".season-btn.active").focus(); }
+            if (e.keyCode === 39) { 
+                e.preventDefault(); 
+                if(focused.nextElementSibling) focused.nextElementSibling.focus(); 
+            }
+            if (e.keyCode === 37) { 
+                e.preventDefault(); 
+                if(focused.previousElementSibling) focused.previousElementSibling.focus(); 
+            }
+            if (e.keyCode === 38) { 
+                e.preventDefault(); 
+                document.querySelector(".season-btn.active").focus(); 
+            }
         }
 
     }, true);
