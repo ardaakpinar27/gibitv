@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Gibi - EDMORTV</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
         /* === YAN MENÜ (SIDEBAR) === */
-        #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; align-items: center; padding-top: 40px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
         .menu-item { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; margin-bottom: 20px; border: 4px solid transparent; transition: 0.2s; }
         .menu-item:focus { background: rgba(0,0,0,0.2); border-color: #000; transform: scale(1.1); }
         .menu-icon { width: 35px; height: 35px; filter: brightness(0); }
@@ -27,20 +28,18 @@
         .season-btn.active { border-bottom: 3px solid #f1c40f; color: #f1c40f; }
         
         .episodes { display: flex; gap: 15px; padding: 10px 60px; overflow-x: auto; scrollbar-width: none; align-items: center; }
-        .episode-card { min-width: 220px; height: 125px; border-radius: 10px; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; border: 3px solid transparent; display: flex; align-items: flex-end; flex-shrink: 0; cursor: pointer; position: relative; }
+        .episode-card { min-width: 220px; height: 125px; border-radius: 10px; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; border: 3px solid transparent; display: flex; align-items: flex-end; flex-shrink: 0; cursor: pointer; }
         .episode-card:focus { border-color: #f1c40f; transform: scale(1.08); z-index: 20; box-shadow: 0 0 15px rgba(241, 196, 15, 0.3); }
         .episode-card span { padding: 10px; background: rgba(0,0,0,0.8); width: 100%; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; border-bottom-left-radius: 7px; border-bottom-right-radius: 7px; }
 
-        /* === VIDEO PLAYER & UI === */
+        /* === PLAYER & UI === */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
         
-        /* Sarı Spinner */
         #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; }
         .spinner { width: 75px; height: 75px; border: 8px solid rgba(255,255,255,0.1); border-top: 8px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* Player Controls */
         #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); transition: opacity 0.5s; opacity: 0; display: flex; flex-direction: column; gap: 15px; }
         .progress-bar-container { width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; }
         #progress-fill { width: 0%; height: 100%; background: #f1c40f; }
@@ -90,13 +89,13 @@
         <div class="controls-row">
             <div class="player-buttons">
                 <button id="btn-rewind" class="ctrl-btn">
-                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forwardback.png">
+                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forwardback.png" alt="Geri">
                 </button>
                 <button id="btn-play" class="ctrl-btn">
-                    <img id="img-play-pause" src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png">
+                    <img id="img-play-pause" src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png" alt="Oynat">
                 </button>
                 <button id="btn-forward" class="ctrl-btn">
-                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forward.png">
+                    <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/forward.png" alt="İleri">
                 </button>
             </div>
             <div class="time-info"><span id="current-time">00:00</span> / <span id="duration-time">00:00</span></div>
@@ -105,7 +104,7 @@
 </div>
 
 <script>
-    // --- BÖLÜM VERİLERİ (1-6 SEZON TAM) ---
+    // --- BÖLÜM VERİLERİ (1-6 SEZON EKSİKSİZ) ---
     const episodeData = {
         1: [
             {name:"1. Kokariç", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4"},
@@ -127,7 +126,7 @@
             {name:"3. Bej", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/3.mp4"},
             {name:"4. Sokak Röportajı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/4.mp4"},
             {name:"5. Çaça ve Cosplay", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/5.mp4"},
-            {name:"6. İki İçi Dışı Bir Kişi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/6.mp4"},
+            {name:"6. İki İçi Dışı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/6.mp4"},
             {name:"7. Gelin Başı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/7.mp4"},
             {name:"8. Resimdeki Ünlü", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/8.mp4"},
             {name:"9. Eşref Hidayet", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/9.mp4"},
@@ -193,13 +192,13 @@
     const pUI = document.getElementById("player-ui"), pFill = document.getElementById("progress-fill");
     const cTime = document.getElementById("current-time"), dTime = document.getElementById("duration-time");
     
-    // BUTON VE RESİM REFERANSLARI
+    // PLAYER BUTON REFERANSLARI
     const btnPlay = document.getElementById("btn-play");
     const btnRew = document.getElementById("btn-rewind");
     const btnFwd = document.getElementById("btn-forward");
     const imgPlayPause = document.getElementById("img-play-pause");
     
-    // GÖRSEL LİNKLERİ
+    // GÖRSEL URLLERİ
     const urlPlay = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/play.png";
     const urlPause = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png";
 
@@ -208,17 +207,13 @@
     function formatTime(s) { let m=Math.floor(s/60), sec=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec); }
     function showUI() { pUI.style.opacity = 1; clearTimeout(uiTimer); uiTimer = setTimeout(() => { pUI.style.opacity = 0; }, 4000); }
     
-    // *** ANA MENÜYE DÖNÜŞ (SPLASH GÖSTERMEZ) ***
+    // --- Geri Dönüş Fonksiyonu ---
+    // Ana sayfaya 'back=true' parametresi ile döner, böylece Splash tekrar çıkmaz.
     function goBack() { 
         window.location.href = "index.html?back=true"; 
     }
     
-    function closeVideo() { 
-        vMain.pause(); 
-        vMain.src=""; 
-        vCont.style.display="none"; 
-        if(lastFocus) lastFocus.focus(); 
-    }
+    function closeVideo() { vMain.pause(); vMain.src=""; vCont.style.display="none"; if(lastFocus) lastFocus.focus(); }
 
     function loadSeason(s) {
         const epEl = document.getElementById("episodes"); epEl.innerHTML = "";
@@ -226,12 +221,8 @@
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
             d.onclick = () => { 
-                lastFocus = d; 
-                vCont.style.display="flex"; 
-                loader.style.display="flex";
-                vMain.src=ep.url; 
-                vMain.load(); 
-                vMain.play();
+                lastFocus = d; vCont.style.display="flex"; loader.style.display="flex";
+                vMain.src=ep.url; vMain.load(); vMain.play();
                 btnPlay.focus(); 
             };
             d.onfocus = () => d.scrollIntoView({ behavior:'smooth', inline:'center'});
@@ -268,7 +259,7 @@
         const focused = document.activeElement;
         const isVideoOpen = vCont.style.display === "flex";
 
-        // 1. GERİ TUŞU YÖNETİMİ (Code 8, 27, 10009)
+        // GERİ TUŞU YÖNETİMİ
         if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             e.preventDefault();
             if (isVideoOpen) {
@@ -279,15 +270,15 @@
             return;
         }
 
-        // 2. VIDEO PLAYER İÇİ KONTROL
+        // PLAYER İÇİ KONTROL
         if (isVideoOpen) {
             showUI();
             if (e.keyCode === 37) { // SOL
-               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Varsayılan */ } 
                else { vMain.currentTime -= 10; }
             }
             if (e.keyCode === 39) { // SAĞ
-               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Varsayılan */ } 
                else { vMain.currentTime += 10; }
             }
             if (e.keyCode === 13 && !focused.classList.contains('ctrl-btn')) { // OK
@@ -296,7 +287,7 @@
             return;
         }
 
-        // 3. ANA MENÜ NAVİGASYONU
+        // ANA MENÜ NAVİGASYONU
         if (e.keyCode === 37 && !focused.classList.contains('menu-item')) {
             const firstS = document.querySelectorAll('.season-btn')[0];
             const firstE = document.querySelectorAll('.episode-card')[0];
