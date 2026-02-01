@@ -7,7 +7,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
-        /* === SPLASH SCREEN === */
+        /* === SPLASH SCREEN (SARI ARKA PLAN & SİYAH FONT) === */
         #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: block; text-align: center; width: 100%; }
         .splash-logo span { font-size: 85px; font-weight: 900; color: #000; opacity: 0; display: inline-block; animation: glowBlack 1.2s forwards; }
@@ -18,7 +18,7 @@
         .splash-logo span:nth-child(5) { animation-delay: 1.0s; } .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
         .splash-logo span:nth-child(7) { animation-delay: 1.4s; }
 
-        /* === YAN MENÜ (SIDEBAR) === */
+        /* === YAN MENÜ (SIDEBAR) - SARI TEMA === */
         #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; transition: width 0.3s ease; overflow: hidden; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         #sidebar:focus-within { width: 260px; }
         .menu-items { flex: 1; padding-top: 40px; }
@@ -29,7 +29,7 @@
         #sidebar:focus-within .menu-text { opacity: 1; }
         .settings-item { margin-top: auto; margin-bottom: 30px; }
 
-        /* === ANA İÇERİK (LAYOUT FIX) === */
+        /* === ANA İÇERİK ALANI === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: filter 0.3s; background: #000; }
         #sidebar:focus-within ~ #main-app { filter: brightness(0.3); pointer-events: none; }
         .hero { position: relative; width: 100%; height: 60vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
@@ -45,18 +45,20 @@
         .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
         .episode-card span { padding: 10px; font-size: 12px; font-weight: 500; background: rgba(0,0,0,0.6); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* === PLAYER & UI === */
+        /* === PLAYER & POPUPS === */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
         #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transition: opacity 0.5s; opacity: 0; }
         .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
         #progress-bar { width: 0%; height: 100%; background: #f1c40f; }
         .time-info { font-size: 18px; font-weight: bold; text-align: right; }
-        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; display: none; }
-        .spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
-        .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; }
+        #exit-popup, #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
+        .popup-content { background: #1a1a1a; padding: 40px; border-radius: 20px; border: 2px solid #f1c40f; text-align: center; min-width: 400px; }
+        .popup-btns { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
+        .popup-btn { padding: 12px 40px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; font-size: 18px; }
+        .btn-confirm { background: #f1c40f; color: #000; }
+        .btn-cancel { background: #333; color: #fff; }
+        .popup-btn:focus { transform: scale(1.1); outline: 3px solid #fff; }
     </style>
 </head>
 <body>
@@ -65,9 +67,7 @@
     <source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg">
 </audio>
 
-<div id="splash">
-    <div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div>
-</div>
+<div id="splash"><div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div></div>
 
 <nav id="sidebar">
     <div class="menu-items">
@@ -94,7 +94,6 @@
 </div>
 
 <div id="video-player-container">
-    <div id="loading-screen"><div class="spinner"></div></div>
     <video id="main-video" playsinline></video>
     <div id="player-ui">
         <div class="progress-container"><div id="progress-bar"></div></div>
@@ -102,8 +101,18 @@
     </div>
 </div>
 
+<div id="exit-popup">
+    <div class="popup-content">
+        <h2>ÇIKIŞ</h2><p style="margin-top:10px;">Uygulamadan çıkmak istiyor musunuz?</p>
+        <div class="popup-btns">
+            <button id="exit-confirm" class="popup-btn btn-confirm">EVET</button>
+            <button id="exit-cancel" class="popup-btn btn-cancel">HAYIR</button>
+        </div>
+    </div>
+</div>
+
 <div id="error-popup">
-    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>Bu içerik şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
+    <div class="popup-content"><h2>BAKIMDA</h2><p>Bu içerik yakında eklenecektir.</p><button id="close-error" class="popup-btn btn-confirm" style="margin-top:20px;">TAMAM</button></div>
 </div>
 
 <script>
@@ -191,112 +200,78 @@
     };
 
     const epEl = document.getElementById("episodes"), sBtns = document.querySelectorAll(".season-btn");
-    const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
-    const pUi = document.getElementById("player-ui"), pBar = document.getElementById("progress-bar");
-    const cTime = document.getElementById("curr-time"), tTime = document.getElementById("total-time");
-    let uiTimer, lastFocus;
+    const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video");
+    const pBar = document.getElementById("progress-bar"), cTime = document.getElementById("curr-time"), tTime = document.getElementById("total-time");
+    let lastFocus, uiTimer;
 
-    function formatTime(s) {
-        let h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = Math.floor(s % 60);
-        return (h > 0 ? h + ":" : "") + (m < 10 ? "0" + m : m) + ":" + (sec < 10 ? "0" + sec : sec);
-    }
-
-    function showUI() { pUi.style.opacity = 1; clearTimeout(uiTimer); uiTimer = setTimeout(() => { pUi.style.opacity = 0; }, 3000); }
-    function notifyAndroid(isOpen) { if (window.AndroidBridge) { window.AndroidBridge.setVideoStatus(isOpen); } }
-    function closeVideo() { vMain.pause(); vMain.src = ""; vCont.style.display = "none"; notifyAndroid(false); if(lastFocus) lastFocus.focus(); }
-
-    vMain.ontimeupdate = () => {
-        let per = (vMain.currentTime / vMain.duration) * 100;
-        pBar.style.width = per + "%";
-        cTime.innerText = formatTime(vMain.currentTime);
-        tTime.innerText = formatTime(vMain.duration || 0);
-    };
-
+    function formatTime(s) { let m=Math.floor(s/60), sec=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec); }
+    function closeVideo() { vMain.pause(); vMain.src=""; vCont.style.display="none"; if(lastFocus) lastFocus.focus(); }
+    
     function loadSeason(s) {
         epEl.innerHTML = "";
-        const episodes = episodeData[s] || [];
-        episodes.forEach(ep => {
+        (episodeData[s] || []).forEach(ep => {
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
-            d.onclick = () => { 
-                lastFocus = d; vCont.style.display = "flex"; loader.style.display = "flex";
-                vMain.src = ep.url; vMain.load(); notifyAndroid(true);
-                vMain.onplaying = () => { loader.style.display = "none"; showUI(); };
-                vMain.oncanplay = () => vMain.play();
-            };
-            d.onfocus = () => d.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+            d.onclick = () => { lastFocus = d; vCont.style.display="flex"; vMain.src=ep.url; vMain.play(); };
+            d.onfocus = () => d.scrollIntoView({ behavior:'smooth', inline:'center'});
             epEl.appendChild(d);
         });
     }
 
-    sBtns.forEach(btn => btn.onclick = () => {
-        sBtns.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        loadSeason(btn.dataset.season);
-    });
+    document.getElementById("exit-cancel").onclick = () => { document.getElementById("exit-popup").style.display="none"; if(lastFocus) lastFocus.focus(); };
+    document.getElementById("exit-confirm").onclick = () => { if(window.AndroidBridge) window.AndroidBridge.closeApp(); else window.history.back(); };
+    document.getElementById("close-error").onclick = () => { document.getElementById("error-popup").style.display="none"; if(lastFocus) lastFocus.focus(); };
 
-    document.getElementById("close-popup-btn").onclick = () => { document.getElementById("error-popup").style.display = "none"; if(lastFocus) lastFocus.focus(); };
+    sBtns.forEach(btn => btn.onclick = () => { sBtns.forEach(b=>b.classList.remove("active")); btn.classList.add("active"); loadSeason(btn.dataset.season); });
 
     window.onload = () => { 
-        loadSeason(1); 
-        sBtns[0].classList.add("active"); 
-        setTimeout(() => { document.getElementById("login-sound").play().catch(e => {}); }, 200);
+        loadSeason(1); sBtns[0].classList.add("active"); 
+        setTimeout(() => { document.getElementById("login-sound").play().catch(e=>{}); }, 200);
         setTimeout(() => sBtns[0].focus(), 4600); 
     };
 
     document.addEventListener('keydown', (e) => {
         const focused = document.activeElement;
         const isMenuItem = focused.classList.contains('menu-item');
-        
+        const isExitOpen = document.getElementById("exit-popup").style.display === "flex";
+
         if (vCont.style.display === "flex") {
-            showUI();
-            switch(e.keyCode) {
-                case 13: e.preventDefault(); vMain.paused ? vMain.play() : vMain.pause(); break;
-                case 39: vMain.currentTime += 10; break;
-                case 37: vMain.currentTime -= 10; break;
-                case 8: case 27: closeVideo(); e.preventDefault(); break;
-            }
+            if(e.keyCode === 8 || e.keyCode === 27) { e.preventDefault(); closeVideo(); }
             return;
         }
 
-        // MENÜDEN SADECE GERİ TUŞU İLE ÇIK
-        if (isMenuItem) {
-            if (e.keyCode === 8 || e.keyCode === 27) { // Geri veya ESC
-                e.preventDefault();
-                if(lastFocus) lastFocus.focus();
-                else document.querySelector('.season-btn.active').focus();
-                return;
-            }
-            // Menü içindeyken standart D-Pad çalışsın
-            return; 
+        if (isExitOpen) {
+            if(e.keyCode === 8 || e.keyCode === 27) { e.preventDefault(); document.getElementById("exit-cancel").click(); }
+            return;
         }
 
-        // MENÜYE GİRİŞ (SOL TUŞ)
-        if (e.keyCode === 37) {
-            let shouldOpen = false;
-            if (focused.classList.contains('season-btn')) {
-                if (focused === document.querySelectorAll('.season-btn')[0]) shouldOpen = true;
-            } else if (focused.classList.contains('episode-card')) {
-                if (focused === document.querySelectorAll('.episode-card')[0]) shouldOpen = true;
-            }
-            
-            if (shouldOpen) {
+        if (isMenuItem && (e.keyCode === 8 || e.keyCode === 27)) {
+            e.preventDefault();
+            if(lastFocus) lastFocus.focus();
+            else document.querySelector('.season-btn.active').focus();
+            return;
+        }
+
+        if (!isMenuItem && (e.keyCode === 8 || e.keyCode === 27)) {
+            e.preventDefault();
+            lastFocus = focused;
+            document.getElementById("exit-popup").style.display = "flex";
+            document.getElementById("exit-cancel").focus();
+            return;
+        }
+
+        if (e.keyCode === 37 && !isMenuItem) {
+            if (focused === document.querySelectorAll('.season-btn')[0] || focused === document.querySelectorAll('.episode-card')[0]) {
                 lastFocus = focused;
                 document.getElementById('nav-diziler').focus();
                 return;
             }
         }
 
-        // D-Pad Navigasyon
         if (focused.classList.contains('season-btn') && e.keyCode === 40) { 
             const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); 
         } else if (focused.classList.contains('episode-card') && e.keyCode === 38) { 
             document.querySelector('.season-btn.active').focus(); e.preventDefault(); 
-        }
-
-        // Popup Kapatma
-        if (document.getElementById("error-popup").style.display === "flex" && (e.keyCode === 8 || e.keyCode === 13)) {
-            document.getElementById("close-popup-btn").onclick(); e.preventDefault();
         }
     });
 </script>
