@@ -29,7 +29,7 @@
         #sidebar:focus-within .menu-text { opacity: 1; }
         .settings-item { margin-top: auto; margin-bottom: 30px; }
 
-        /* === ANA İÇERİK === */
+        /* === ANA İÇERİK (LAYOUT FIX) === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: filter 0.3s; background: #000; }
         #sidebar:focus-within ~ #main-app { filter: brightness(0.3); pointer-events: none; }
         .hero { position: relative; width: 100%; height: 60vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
@@ -66,9 +66,7 @@
 </audio>
 
 <div id="splash">
-    <div class="splash-logo">
-        <span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span>
-    </div>
+    <div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div>
 </div>
 
 <nav id="sidebar">
@@ -83,7 +81,7 @@
 <div id="main-app">
     <div class="hero"><div class="cover-title">GiBiTV</div></div>
     <div class="ui-footer">
-        <div id="seasons-container" class="seasons">
+        <div class="seasons">
             <button class="season-btn" data-season="1">Sezon 1</button>
             <button class="season-btn" data-season="2">Sezon 2</button>
             <button class="season-btn" data-season="3">Sezon 3</button>
@@ -178,13 +176,13 @@
         6: [
             { name: "1. Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
             { name: "2. Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4" },
-            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00603.mp4" },
-            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00604.mp4" },
-            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00605.mp4" },
-            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00606.mp4" },
-            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00607.mp4" },
-            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00608.mp4" },
-            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00609.mp4" },
+            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4" },
+            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604.mp4" },
+            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605.mp4" },
+            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606.mp4" },
+            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607.mp4" },
+            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608.mp4" },
+            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
             { name: "10. İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0S0610.mp4" },
             { name: "11. Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
             { name: "12. Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
@@ -261,25 +259,25 @@
             return;
         }
 
-        // MENÜDEN ÇIKIŞ KONTROLÜ (Sağ Tuş veya Geri Tuşu)
+        // MENÜDEN SADECE GERİ TUŞU İLE ÇIK
         if (isMenuItem) {
-            if (e.keyCode === 39 || e.keyCode === 8 || e.keyCode === 27) { // Sağ veya Geri
+            if (e.keyCode === 8 || e.keyCode === 27) { // Geri veya ESC
                 e.preventDefault();
                 if(lastFocus) lastFocus.focus();
                 else document.querySelector('.season-btn.active').focus();
                 return;
             }
+            // Menü içindeyken standart D-Pad çalışsın
+            return; 
         }
 
-        // MENÜYE GİRİŞ KONTROLÜ (Sol Tuş)
-        if (e.keyCode === 37 && !isMenuItem) {
+        // MENÜYE GİRİŞ (SOL TUŞ)
+        if (e.keyCode === 37) {
             let shouldOpen = false;
             if (focused.classList.contains('season-btn')) {
-                const btns = Array.from(document.querySelectorAll('.season-btn'));
-                if (focused === btns[0]) shouldOpen = true;
+                if (focused === document.querySelectorAll('.season-btn')[0]) shouldOpen = true;
             } else if (focused.classList.contains('episode-card')) {
-                const cards = Array.from(document.querySelectorAll('.episode-card'));
-                if (focused === cards[0]) shouldOpen = true;
+                if (focused === document.querySelectorAll('.episode-card')[0]) shouldOpen = true;
             }
             
             if (shouldOpen) {
@@ -289,19 +287,16 @@
             }
         }
 
-        // Diger Navigasyonlar
-        if (e.keyCode === 13 && isMenuItem) {
-            if(focused.id !== 'nav-diziler') {
-                lastFocus = focused;
-                document.getElementById("error-popup").style.display = "flex";
-                document.getElementById("close-popup-btn").focus();
-            }
-        }
-
+        // D-Pad Navigasyon
         if (focused.classList.contains('season-btn') && e.keyCode === 40) { 
             const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); 
         } else if (focused.classList.contains('episode-card') && e.keyCode === 38) { 
             document.querySelector('.season-btn.active').focus(); e.preventDefault(); 
+        }
+
+        // Popup Kapatma
+        if (document.getElementById("error-popup").style.display === "flex" && (e.keyCode === 8 || e.keyCode === 13)) {
+            document.getElementById("close-popup-btn").onclick(); e.preventDefault();
         }
     });
 </script>
