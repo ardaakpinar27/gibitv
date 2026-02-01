@@ -9,11 +9,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
-        /* === YAN MENÜ (SIDEBAR) === */
-        #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; align-items: center; padding-top: 40px; }
-        .menu-item { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; margin-bottom: 20px; border: 4px solid transparent; transition: 0.2s; }
+        /* === YAN MENÜ === */
+        #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; align-items: center; padding-top: 30px; }
+        .menu-item { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; margin-bottom: 15px; border: 4px solid transparent; transition: 0.2s; }
         .menu-item:focus { background: rgba(0,0,0,0.2); border-color: #000; transform: scale(1.1); }
-        .menu-icon { width: 35px; height: 35px; filter: brightness(0); }
+        .menu-icon { width: 35px; height: 35px; filter: brightness(0); object-fit: contain; }
 
         /* === ANA İÇERİK === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; background: #000; display: flex; flex-direction: column; }
@@ -57,9 +57,11 @@
 <body>
 
 <nav id="sidebar">
-    <div class="menu-item" tabindex="0" onclick="goBack()" id="btn-back-menu">
-        <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/series.png" class="menu-icon">
+    <div class="menu-item" tabindex="0" onclick="goBack()" id="nav-home">
+        <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/homepage.png" class="menu-icon">
     </div>
+    
+    <div class="menu-item" tabindex="0" id="nav-series"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/series.png" class="menu-icon"></div>
     <div class="menu-item" tabindex="0"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/movies.png" class="menu-icon"></div>
     <div class="menu-item" tabindex="0"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/tv.png" class="menu-icon"></div>
     <div class="menu-item" tabindex="0" style="margin-top: auto; margin-bottom: 30px;"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/settings.png" class="menu-icon"></div>
@@ -134,47 +136,47 @@
         ],
         3: [
             {name:"1. Sarışın ve Kotlu", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.mp4"},
-            {name:"2. Keskin Nişancı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.mp4"},
-            {name:"3. Büfe", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.mp4"},
-            {name:"4. Sınıfsal Veda", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.mp4"},
-            {name:"5. Mazbut Bir Hayat", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.mp4"},
-            {name:"6. Ghosting", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.mp4"},
-            {name:"7. Teşekkürler", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.mp4"},
-            {name:"8. Gülnuray", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.mp4"},
-            {name:"9. Bilanço", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.mp4"},
-            {name:"10. Birinci Kabak", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.mp4"}
+            {name:"2. Keskin Nişancı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.B%C3%B6l%C3%BCm%20Keskin%20Ni%C5%9Fanc%C4%B1.mp4"},
+            {name:"3. Büfe", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.B%C3%B6l%C3%BCm%20B%C3%BCfe.mp4"},
+            {name:"4. Sınıfsal Veda", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.B%C3%B6l%C3%BCm%20S%C4%B1n%C4%B1fsal%20Veda.mp4"},
+            {name:"5. Mazbut Bir Hayat", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.B%C3%B6l%C3%BCm%20Mazbut%20Bir%20Hayat.mp4"},
+            {name:"6. Ghosting", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.B%C3%B6l%C3%BCm%20Ghosting.mp4"},
+            {name:"7. Teşekkürler", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.B%C3%B6l%C3%BCm%20Te%C5%9Fekk%C3%BCrler.mp4"},
+            {name:"8. Gülnuray", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.B%C3%B6l%C3%BCm%20G%C3%BClnuray.mp4"},
+            {name:"9. Bilanço", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/9.B%C3%B6l%C3%BCm%20Bilan%C3%A7o.mp4"},
+            {name:"10. Birinci Kabak", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/10.B%C3%B6l%C3%BCm%20Birinci%20Kabak.mp4"}
         ],
         4: [
-            {name:"1. Övgü", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.mp4"},
-            {name:"2. Bin", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.mp4"},
-            {name:"3. Orta Yaş Krizi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.mp4"},
-            {name:"4. Kafa Nakli", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.mp4"},
-            {name:"5. Patern", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.mp4"},
-            {name:"6. 165", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.mp4"},
-            {name:"7. Dönen Tekme", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.mp4"},
-            {name:"8. Defter", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.mp4"},
-            {name:"9. Dirty Talk", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.mp4"},
-            {name:"10. Eğitim Öğretim", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.mp4"}
+            {name:"1. Övgü", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.B%C3%B6l%C3%BCm%20%C3%96vg%C3%BC.mp4"},
+            {name:"2. Bin", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.B%C3%B6l%C3%BCm%20Bin.mp4"},
+            {name:"3. Orta Yaş Krizi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.B%C3%B6l%C3%BCm%20Orta%20Ya%C5%9F%20Krizi.mp4"},
+            {name:"4. Kafa Nakli", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.B%C3%B6l%C3%BCm%20Kafa%20Nakli.mp4"},
+            {name:"5. Patern", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.B%C3%B6l%C3%BCm%20Patern.mp4"},
+            {name:"6. 165", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.B%C3%B6l%C3%BCm%20165.mp4"},
+            {name:"7. Dönen Tekme", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.B%C3%B6l%C3%BCm%20D%C3%B6nen%20Tekme.mp4"},
+            {name:"8. Defter", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.B%C3%B6l%C3%BCm%20Defter.mp4"},
+            {name:"9. Dirty Talk", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.B%C3%B6l%C3%BCm%20Dirty%20Talk.mp4"},
+            {name:"10. Eğitim Öğretim", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.B%C3%B6l%C3%BCm%20E%C4%9E%C4%B0T%C4%B0M%20%C3%96%C4%9ERET%C4%B0M%20YILI.mp4"}
         ],
         5: [
-            {name:"1. Sinek", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/1.mp4"},
-            {name:"2. Kahır", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/2.mp4"},
-            {name:"3. Şako Bosphorus", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/3.mp4"},
+            {name:"1. Sinek", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4"},
+            {name:"2. Kahır", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4"},
+            {name:"3. Şako Bosphorus", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4"},
             {name:"4. Yokluk", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4"},
-            {name:"5. Böbrek Taşı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/5.mp4"},
+            {name:"5. Böbrek Taşı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4"},
             {name:"6. Aşağılık Adam", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4"},
             {name:"7. Leopar", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4"},
             {name:"8. Şadan", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4"},
-            {name:"9. İrade", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/9.mp4"},
-            {name:"10. Geleceğin Habercisi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/10.mp4"},
-            {name:"11. Kenan Ticaret", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/11.mp4"},
-            {name:"12. Kuzgunlar 1", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/12.mp4"},
-            {name:"13. Kuzgunlar 2", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/13.mp4"}
+            {name:"9. İrade", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4"},
+            {name:"10. Geleceğin Habercisi", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10.mp4"},
+            {name:"11. Kenan Ticaret", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4"},
+            {name:"12. Kuzgunlar 1", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/S5E12.mp4"},
+            {name:"13. Kuzgunlar 2", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E13.mp4"}
         ],
         6: [
             {name:"1. Waffle", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/1.mp4"},
-            {name:"2. Mikrodalga", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/2.mp4"},
-            {name:"3. Girls Night Out", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/3.mp4"},
+            {name:"2. Mikrodalga", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4"},
+            {name:"3. Girls Night Out", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4"},
             {name:"4. Metin", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00604.mp4"},
             {name:"5. Nomen est Omen", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00605.mp4"},
             {name:"6. Çağrı", url:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00606.mp4"},
@@ -191,14 +193,10 @@
     const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
     const pUI = document.getElementById("player-ui"), pFill = document.getElementById("progress-fill");
     const cTime = document.getElementById("current-time"), dTime = document.getElementById("duration-time");
-    
-    // PLAYER BUTON REFERANSLARI
-    const btnPlay = document.getElementById("btn-play");
-    const btnRew = document.getElementById("btn-rewind");
-    const btnFwd = document.getElementById("btn-forward");
+    const btnPlay = document.getElementById("btn-play"), btnRew = document.getElementById("btn-rewind"), btnFwd = document.getElementById("btn-forward");
     const imgPlayPause = document.getElementById("img-play-pause");
     
-    // GÖRSEL URLLERİ
+    // GÖRSEL LİNKLERİ
     const urlPlay = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/play.png";
     const urlPause = "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png";
 
@@ -207,13 +205,17 @@
     function formatTime(s) { let m=Math.floor(s/60), sec=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec); }
     function showUI() { pUI.style.opacity = 1; clearTimeout(uiTimer); uiTimer = setTimeout(() => { pUI.style.opacity = 0; }, 4000); }
     
-    // --- Geri Dönüş Fonksiyonu ---
-    // Ana sayfaya 'back=true' parametresi ile döner, böylece Splash tekrar çıkmaz.
+    // *** ANA MENÜYE DÖNÜŞ (SPLASH GÖSTERMEZ) ***
     function goBack() { 
         window.location.href = "index.html?back=true"; 
     }
     
-    function closeVideo() { vMain.pause(); vMain.src=""; vCont.style.display="none"; if(lastFocus) lastFocus.focus(); }
+    function closeVideo() { 
+        vMain.pause(); 
+        vMain.src=""; 
+        vCont.style.display="none"; 
+        if(lastFocus) lastFocus.focus(); 
+    }
 
     function loadSeason(s) {
         const epEl = document.getElementById("episodes"); epEl.innerHTML = "";
@@ -221,8 +223,12 @@
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
             d.onclick = () => { 
-                lastFocus = d; vCont.style.display="flex"; loader.style.display="flex";
-                vMain.src=ep.url; vMain.load(); vMain.play();
+                lastFocus = d; 
+                vCont.style.display="flex"; 
+                loader.style.display="flex";
+                vMain.src=ep.url; 
+                vMain.load(); 
+                vMain.play();
                 btnPlay.focus(); 
             };
             d.onfocus = () => d.scrollIntoView({ behavior:'smooth', inline:'center'});
@@ -259,7 +265,7 @@
         const focused = document.activeElement;
         const isVideoOpen = vCont.style.display === "flex";
 
-        // GERİ TUŞU YÖNETİMİ
+        // 1. GERİ TUŞU YÖNETİMİ (Code 8, 27, 10009)
         if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             e.preventDefault();
             if (isVideoOpen) {
@@ -270,15 +276,15 @@
             return;
         }
 
-        // PLAYER İÇİ KONTROL
+        // 2. VIDEO PLAYER İÇİ KONTROL
         if (isVideoOpen) {
             showUI();
             if (e.keyCode === 37) { // SOL
-               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Varsayılan */ } 
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
                else { vMain.currentTime -= 10; }
             }
             if (e.keyCode === 39) { // SAĞ
-               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Varsayılan */ } 
+               if (focused === btnRew || focused === btnPlay || focused === btnFwd) { /* Normal buton gezintisi */ } 
                else { vMain.currentTime += 10; }
             }
             if (e.keyCode === 13 && !focused.classList.contains('ctrl-btn')) { // OK
@@ -287,12 +293,12 @@
             return;
         }
 
-        // ANA MENÜ NAVİGASYONU
+        // 3. ANA MENÜ NAVİGASYONU
         if (e.keyCode === 37 && !focused.classList.contains('menu-item')) {
             const firstS = document.querySelectorAll('.season-btn')[0];
             const firstE = document.querySelectorAll('.episode-card')[0];
             if (focused === firstS || focused === firstE) {
-                document.getElementById('btn-back-menu').focus(); // Sidebar'a git
+                document.getElementById('nav-home').focus(); // Sidebar'a git
             }
         }
         if (e.keyCode === 39 && focused.classList.contains('menu-item')) {
@@ -302,6 +308,11 @@
             document.querySelector('.episode-card').focus(); e.preventDefault();
         } else if (focused.classList.contains('episode-card') && e.keyCode === 38) {
             document.querySelector('.season-btn.active').focus(); e.preventDefault();
+        }
+        
+        // Home İkonu Tıklama (Enter)
+        if (e.keyCode === 13 && focused.id === "nav-home") {
+            goBack();
         }
     }, true);
 </script>
