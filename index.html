@@ -18,13 +18,12 @@
         .splash-logo span:nth-child(5) { animation-delay: 1.0s; } .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
         .splash-logo span:nth-child(7) { animation-delay: 1.4s; }
 
-        /* === SABİT YAN MENÜ (SIDEBAR) === */
+        /* === SABİT YAN MENÜ === */
         #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
         .menu-items { flex: 1; padding-top: 40px; display: flex; flex-direction: column; align-items: center; }
         .menu-item { width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 12px; margin-bottom: 20px; transition: 0.2s; border: 4px solid transparent; }
         .menu-item:focus { background: rgba(0,0,0,0.2); border-color: #000; transform: scale(1.1); }
         .menu-icon { width: 35px; height: 35px; object-fit: contain; filter: brightness(0); }
-        .settings-item { margin-bottom: 30px; }
 
         /* === ANA İÇERİK === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #000; }
@@ -41,9 +40,14 @@
         .episode-card:focus { border-color: #f1c40f; transform: scale(1.08); z-index: 20; }
         .episode-card span { padding: 10px; font-size: 13px; font-weight: 600; background: rgba(0,0,0,0.7); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* === PLAYER & POPUPS === */
+        /* === PLAYER & SPINNER === */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
+        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; }
+        .spinner { width: 70px; height: 70px; border: 6px solid rgba(255,255,255,0.1); border-top: 6px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* === EXIT POPUP === */
         #exit-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; justify-content: center; align-items: center; }
         .popup-content { background: #1a1a1a; padding: 40px; border-radius: 20px; border: 2px solid #f1c40f; text-align: center; min-width: 450px; }
         .popup-btns { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
@@ -66,14 +70,14 @@
         <div class="menu-item" tabindex="0" id="nav-diziler"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/series.png" class="menu-icon"></div>
         <div class="menu-item" tabindex="0" id="nav-filmler"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/movies.png" class="menu-icon"></div>
         <div class="menu-item" tabindex="0" id="nav-canli"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/tv.png" class="menu-icon"></div>
-        <div class="menu-item settings-item" tabindex="0" id="nav-ayarlar" style="margin-top: auto;"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/settings.png" class="menu-icon"></div>
+        <div class="menu-item" tabindex="0" id="nav-ayarlar" style="margin-top: auto; margin-bottom: 30px;"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/settings.png" class="menu-icon"></div>
     </div>
 </nav>
 
 <div id="main-app">
     <div class="hero"><div class="cover-title">EDMORTV</div></div>
     <div class="ui-footer">
-        <div class="seasons" id="seasons-bar">
+        <div class="seasons">
             <button class="season-btn" data-season="1">Sezon 1</button>
             <button class="season-btn" data-season="2">Sezon 2</button>
             <button class="season-btn" data-season="3">Sezon 3</button>
@@ -86,6 +90,7 @@
 </div>
 
 <div id="video-player-container">
+    <div id="loading-screen"><div class="spinner"></div></div>
     <video id="main-video" playsinline></video>
 </div>
 
@@ -155,7 +160,7 @@
             { name: "1. Sinek", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4" },
             { name: "2. Kahır", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4" },
             { name: "3. Şako", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4" },
-            { name: "4. Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
+            { name: "4. Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
             { name: "5. Böbrek Taşı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4" },
             { name: "6. Aşağılık Adam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4" },
             { name: "7. Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
@@ -169,13 +174,13 @@
         6: [
             { name: "1. Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
             { name: "2. Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4" },
-            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00603.mp4" },
-            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00604.mp4" },
-            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00605.mp4" },
-            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00606.mp4" },
-            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00607.mp4" },
-            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00608.mp4" },
-            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00609.mp4" },
+            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4" },
+            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604.mp4" },
+            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605.mp4" },
+            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606.mp4" },
+            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607.mp4" },
+            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608.mp4" },
+            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
             { name: "10. İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0S0610.mp4" },
             { name: "11. Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
             { name: "12. Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
@@ -184,7 +189,7 @@
     };
 
     const epEl = document.getElementById("episodes"), sBtns = document.querySelectorAll(".season-btn");
-    const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video");
+    const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
     let lastFocus;
 
     function closeVideo() { vMain.pause(); vMain.src=""; vCont.style.display="none"; if(lastFocus) lastFocus.focus(); }
@@ -194,7 +199,12 @@
         (episodeData[s] || []).forEach(ep => {
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
-            d.onclick = () => { lastFocus = d; vCont.style.display="flex"; vMain.src=ep.url; vMain.play(); };
+            d.onclick = () => { 
+                lastFocus = d; vCont.style.display="flex"; loader.style.display="flex";
+                vMain.src=ep.url; vMain.load();
+                vMain.onplaying = () => { loader.style.display="none"; };
+                vMain.oncanplay = () => vMain.play();
+            };
             d.onfocus = () => d.scrollIntoView({ behavior:'smooth', inline:'center'});
             epEl.appendChild(d);
         });
@@ -211,25 +221,22 @@
         setTimeout(() => sBtns[0].focus(), 4600); 
     };
 
-    // --- DPAD NAVİGASYON ---
     document.addEventListener('keydown', (e) => {
         const focused = document.activeElement;
         const isMenuItem = focused.classList.contains('menu-item');
         const isExitOpen = document.getElementById("exit-popup").style.display === "flex";
 
-        // 1. VİDEO AÇIKKEN GERİ TUŞU
         if (vCont.style.display === "flex") {
             if(e.keyCode === 8 || e.keyCode === 27) { e.preventDefault(); closeVideo(); }
             return;
         }
 
-        // 2. ÇIKIŞ POPUP AÇIKKEN GERİ TUŞU
         if (isExitOpen) {
             if(e.keyCode === 8 || e.keyCode === 27) { e.preventDefault(); document.getElementById("exit-cancel").click(); }
             return;
         }
 
-        // 3. ANA EKRANDA GERİ TUŞU -> ÇIKIŞ POPUP AÇ
+        // GERİ TUŞU -> ÇIKIŞ SOR
         if (e.keyCode === 8 || e.keyCode === 27) {
             e.preventDefault();
             lastFocus = focused;
@@ -238,7 +245,7 @@
             return;
         }
 
-        // 4. SOL DPAD -> MENÜYE GEÇ (Sadece en soldaki öğedeyken)
+        // SOL -> MENÜYE GİT
         if (e.keyCode === 37 && !isMenuItem) {
             if (focused === document.querySelectorAll('.season-btn')[0] || focused === document.querySelectorAll('.episode-card')[0]) {
                 lastFocus = focused;
@@ -247,14 +254,14 @@
             }
         }
 
-        // 5. SAĞ DPAD -> MENÜDEN ÇIK
+        // SAĞ -> MENÜDEN ÇIK
         if (e.keyCode === 39 && isMenuItem) {
             if(lastFocus) lastFocus.focus();
             else document.querySelector('.season-btn.active').focus();
             return;
         }
 
-        // 6. DİKEY NAVİGASYON
+        // D-PAD DİKEY KONTROL
         if (focused.classList.contains('season-btn') && e.keyCode === 40) { 
             const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); 
         } else if (focused.classList.contains('episode-card') && e.keyCode === 38) { 
