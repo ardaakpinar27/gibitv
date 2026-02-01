@@ -6,16 +6,49 @@
     <title>EDMORTV - Ana Sayfa</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
+        
+        /* BLUR GEÇİŞ EFEKTİ İÇİN BODY AYARLARI */
+        html, body { 
+            background: #000; 
+            color: #fff; 
+            font-family: 'Segoe UI', sans-serif; 
+            width: 100vw; 
+            height: 100vh; 
+            overflow: hidden; 
+            user-select: none;
+            
+            /* Başlangıçta sayfa bulanık ve görünmez */
+            opacity: 0;
+            filter: blur(20px);
+            transform: scale(0.98);
+            transition: opacity 0.6s ease-out, filter 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        /* Sayfa yüklendiğinde JS bu sınıfı ekleyecek */
+        body.loaded {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
 
         /* === SPLASH SCREEN === */
-        #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; animation: forceHide 0.5s forwards 4.5s; }
+        #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; }
         .splash-logo span { font-size: 85px; font-weight: 900; color: #000; opacity: 0; display: inline-block; animation: glowBlack 1.2s forwards; }
+        
         @keyframes glowBlack { to { opacity: 1; } }
+        /* Animasyonla gizleme (Sadece ilk açılışta çalışacak) */
+        .splash-animate { animation: forceHide 0.5s forwards 4.5s; }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; } }
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
+
+        /* Geri dönüşte splash'i anında gizlemek için */
+        .splash-none { display: none !important; }
+
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } 
+        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } 
+        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } 
+        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
         .splash-logo span:nth-child(7) { animation-delay: 1.4s; }
 
         /* === STATİK YAN MENÜ === */
@@ -24,7 +57,7 @@
         .menu-item:focus { background: rgba(0,0,0,0.2); border-color: #000; transform: scale(1.1); }
         .menu-icon { width: 35px; height: 35px; filter: brightness(0); }
 
-        /* === ANA İÇERİK (KATALOG) === */
+        /* === ANA İÇERİK === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; background: #000; display: flex; flex-direction: column; padding: 40px; }
         .page-title { font-size: 40px; font-weight: bold; margin-bottom: 30px; color: #f1c40f; text-transform: uppercase; }
         
@@ -48,7 +81,9 @@
 
 <audio id="login-sound"><source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg"></audio>
 
-<div id="splash"><div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div></div>
+<div id="splash">
+    <div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div>
+</div>
 
 <nav id="sidebar">
     <div class="menu-item" tabindex="0" id="nav-diziler"><img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/series.png" class="menu-icon"></div>
@@ -78,22 +113,45 @@
 </div>
 
 <script>
-    // GIBI SAYFASINI ACAN LINK (RAW KOD - DİKKAT: Tarayıcılar raw kodu text olarak açabilir)
+    // --- GİBİ SAYFASINA YÖNLENDİRME ---
     function openGibi() {
-        // İstersen burada window.location.href = 'series.html'; de diyebilirsin eğer dosyayı yanına koyacaksan.
-        // Senin isteğin üzerine raw linki veriyorum:
-        window.location.href = "https://raw.githubusercontent.com/ardaakpinar27/gibitv/refs/heads/main/series.html";
+        // Blur efektiyle çıkış
+        document.body.classList.remove('loaded');
+        setTimeout(() => {
+            window.location.href = "https://raw.githubusercontent.com/ardaakpinar27/gibitv/refs/heads/main/series.html";
+        }, 300); // Animasyon bitince git
     }
 
-    // --- TEMEL AYARLAR ---
+    // --- TEMEL BUTONLAR ---
     document.getElementById("exit-cancel").onclick = () => { document.getElementById("exit-popup").style.display="none"; if(lastFocus) lastFocus.focus(); };
     document.getElementById("exit-confirm").onclick = () => { if(window.AndroidBridge) window.AndroidBridge.closeApp(); else window.close(); };
     
     let lastFocus;
 
-    window.onload = () => { 
-        setTimeout(() => { document.getElementById("login-sound").play().catch(e=>{}); }, 200);
-        setTimeout(() => document.getElementById("nav-diziler").focus(), 4600); 
+    // --- SAYFA YÜKLENME MANTIĞI (SPLASH & BLUR) ---
+    window.onload = () => {
+        const splash = document.getElementById("splash");
+        
+        // 1. Splash Kontrolü (Session Storage)
+        if (sessionStorage.getItem("app_started")) {
+            // Daha önce açıldıysa, Splash'i yok et
+            splash.classList.add("splash-none");
+        } else {
+            // İlk açılışsa, animasyonu oynat ve kaydet
+            splash.classList.add("splash-animate");
+            sessionStorage.setItem("app_started", "true");
+            setTimeout(() => { document.getElementById("login-sound").play().catch(e=>{}); }, 200);
+        }
+
+        // 2. Blur Efektini Kaldır (Sahneye Giriş)
+        setTimeout(() => {
+            document.body.classList.add("loaded");
+        }, 100);
+
+        // 3. Odağı Ayarla
+        setTimeout(() => {
+            document.getElementById("nav-diziler").focus();
+        }, sessionStorage.getItem("app_started") ? 300 : 4600); // Geri dönüşse hızlı, ilk açılışsa yavaş odaklan
     };
 
     // --- NAVİGASYON ---
