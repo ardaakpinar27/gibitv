@@ -112,12 +112,12 @@
 
     // --- GİBİ DİZİSİNİ AÇAN FONKSİYON ---
     function openGibi() {
-        // Geri döndüğümüzde Splash çıkmasın diye LocalStorage'a not düşüyoruz
+        // Geri dönüş kontrolü için
         localStorage.setItem("edm_app_started", "true");
         
-        // ÖNEMLİ: raw.githack.com kullanarak RAW kodu HTML olarak render ediyoruz.
-        // Senin verdiğin linki "text" olmaktan çıkarıp "web sayfası" yapıyor.
-        window.location.href = "https://raw.githack.com/ardaakpinar27/gibitv/main/series.html";
+        // KESİN ÇÖZÜM: jsDelivr CDN kullanıyoruz.
+        // GitHub Raw dosyalarını otomatik olarak HTML Content-Type ile sunar.
+        window.location.href = "https://cdn.jsdelivr.net/gh/ardaakpinar27/gibitv@main/series.html";
     }
 
     // --- BUTON İŞLEVLERİ ---
@@ -128,7 +128,6 @@
     window.onload = () => {
         const urlParams = new URLSearchParams(window.location.search);
         
-        // Eğer URL parametresi veya LocalStorage varsa Splash gösterme
         if (localStorage.getItem("edm_app_started") === "true" || urlParams.get('back') === 'true') {
             splash.classList.add("hide-splash");
             setTimeout(() => { document.getElementById("card-gibi").focus(); }, 200);
@@ -144,7 +143,6 @@
     window.addEventListener('keydown', function(e) {
         const focused = document.activeElement;
         
-        // GERİ TUŞU
         if (e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             e.preventDefault();
             if (exitPop.style.display === "flex") {
@@ -157,22 +155,18 @@
             return;
         }
 
-        // ÇIKIŞ KUTUSU KONTROLÜ
         if (exitPop.style.display === "flex") {
             if (e.keyCode === 37) document.getElementById("exit-confirm").focus();
             if (e.keyCode === 39) document.getElementById("exit-cancel").focus();
             return;
         }
 
-        // ANA EKRAN GEÇİŞLERİ
         if (e.keyCode === 39 && focused.classList.contains('menu-item')) {
             document.getElementById("card-gibi").focus();
         }
         if (e.keyCode === 37 && focused.id === "card-gibi") {
             document.getElementById("nav-diziler").focus();
         }
-        
-        // ENTER TUŞU (KART AÇMA)
         if (e.keyCode === 13 && focused.id === "card-gibi") {
             openGibi();
         }
