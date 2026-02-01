@@ -7,7 +7,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
-        /* === SPLASH SCREEN (STABİL) === */
+        /* === SPLASH SCREEN === */
         #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: block; text-align: center; width: 100%; }
         .splash-logo span { font-size: 85px; font-weight: 900; color: #000; opacity: 0; display: inline-block; animation: glowBlack 1.2s forwards; }
@@ -248,6 +248,7 @@
 
     document.addEventListener('keydown', (e) => {
         const focused = document.activeElement;
+        const isMenuItem = focused.classList.contains('menu-item');
         
         if (vCont.style.display === "flex") {
             showUI();
@@ -260,31 +261,36 @@
             return;
         }
 
-        if (e.keyCode === 37) { // SOL tuşu
-            if (focused.classList.contains('menu-item')) return; // Zaten menüdeysek bir şey yapma
-
-            // SEZON BUTONLARINDA SOL KONTROLÜ
-            if (focused.classList.contains('season-btn')) {
-                const sBtnsArray = Array.from(document.querySelectorAll('.season-btn'));
-                if (focused === sBtnsArray[0]) { // Eğer ilk sezondaysak menüyü aç
-                    lastFocus = focused;
-                    document.getElementById('nav-diziler').focus();
-                }
-            }
-            // BÖLÜM KARTLARINDA SOL KONTROLÜ
-            else if (focused.classList.contains('episode-card')) {
-                const epCards = Array.from(document.querySelectorAll('.episode-card'));
-                if (focused === epCards[0]) { // Eğer ilk karttaysak menüyü aç
-                    lastFocus = focused;
-                    document.getElementById('nav-diziler').focus();
-                }
-            }
-        } else if (e.keyCode === 39) { // SAĞ tuşu
-            if (focused.classList.contains('menu-item')) {
+        // MENÜDEN ÇIKIŞ KONTROLÜ (Sağ Tuş veya Geri Tuşu)
+        if (isMenuItem) {
+            if (e.keyCode === 39 || e.keyCode === 8 || e.keyCode === 27) { // Sağ veya Geri
+                e.preventDefault();
                 if(lastFocus) lastFocus.focus();
                 else document.querySelector('.season-btn.active').focus();
+                return;
             }
-        } else if (e.keyCode === 13 && focused.classList.contains('menu-item')) {
+        }
+
+        // MENÜYE GİRİŞ KONTROLÜ (Sol Tuş)
+        if (e.keyCode === 37 && !isMenuItem) {
+            let shouldOpen = false;
+            if (focused.classList.contains('season-btn')) {
+                const btns = Array.from(document.querySelectorAll('.season-btn'));
+                if (focused === btns[0]) shouldOpen = true;
+            } else if (focused.classList.contains('episode-card')) {
+                const cards = Array.from(document.querySelectorAll('.episode-card'));
+                if (focused === cards[0]) shouldOpen = true;
+            }
+            
+            if (shouldOpen) {
+                lastFocus = focused;
+                document.getElementById('nav-diziler').focus();
+                return;
+            }
+        }
+
+        // Diger Navigasyonlar
+        if (e.keyCode === 13 && isMenuItem) {
             if(focused.id !== 'nav-diziler') {
                 lastFocus = focused;
                 document.getElementById("error-popup").style.display = "flex";
