@@ -5,20 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; display: flex; }
 
-        /* SPLASH SCREEN */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; justify-content: center; align-items: center; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
+        /* === SPLASH SCREEN (SARI ARKA PLAN & SİYAH FONT) === */
+        #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: flex; gap: 10px; }
-        .splash-logo span { font-size: 80px; font-weight: 900; color: #222; opacity: 0.2; animation: glow 1.5s forwards; }
-        @keyframes glow { to { color: #fff; opacity: 1; text-shadow: 0 0 30px rgba(255, 255, 255, 0.6); } }
+        .splash-logo span { font-size: 80px; font-weight: 900; color: #000; opacity: 0; animation: glowBlack 1.5s forwards; }
+        
+        @keyframes glowBlack { 
+            to { opacity: 1; text-shadow: 0 0 15px rgba(0, 0, 0, 0.2); } 
+        }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; pointer-events: none; } }
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } .splash-logo span:nth-child(2) { animation-delay: 0.5s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.8s; } .splash-logo span:nth-child(4) { animation-delay: 1.1s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.4s; } .splash-logo span:nth-child(6) { animation-delay: 1.7s; }
+        
+        /* Harf Animasyon Zamanlamaları */
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } 
+        .splash-logo span:nth-child(2) { animation-delay: 0.5s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.8s; } 
+        .splash-logo span:nth-child(4) { animation-delay: 1.1s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.4s; } 
+        .splash-logo span:nth-child(6) { animation-delay: 1.7s; }
+        .splash-logo span:nth-child(7) { animation-delay: 2.0s; }
 
-        /* ARAYÜZ */
-        #main-app { display: flex; flex-direction: column; width: 100%; height: 100%; }
+        /* === YAN MENÜ (SIDEBAR) === */
+        #sidebar { position: fixed; left: 0; top: 0; bottom: 0; width: 80px; background: #f1c40f; z-index: 500; display: flex; flex-direction: column; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
+        #sidebar:focus-within { width: 260px; }
+        
+        .menu-items { flex: 1; padding-top: 40px; }
+        .menu-item { display: flex; align-items: center; padding: 15px 20px; cursor: pointer; color: #000; transition: 0.2s; white-space: nowrap; border-left: 5px solid transparent; margin-bottom: 15px; }
+        .menu-item:focus { background: rgba(0,0,0,0.1); border-left-color: #000; outline: none; transform: scale(1.05); }
+        
+        .menu-icon { width: 35px; height: 35px; object-fit: contain; margin-right: 25px; filter: brightness(0); }
+        .menu-text { font-size: 19px; font-weight: 800; opacity: 0; transition: opacity 0.2s; text-transform: uppercase; color: #000; }
+        #sidebar:focus-within .menu-text { opacity: 1; }
+        
+        .settings-item { margin-top: auto; margin-bottom: 30px; }
+
+        /* === ANA İÇERİK ALANI === */
+        #main-app { flex: 1; margin-left: 80px; display: flex; flex-direction: column; transition: filter 0.3s; }
+        #sidebar:focus-within ~ #main-app { filter: brightness(0.3); pointer-events: none; }
+
         .hero { position: relative; flex: 1; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
         .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); }
         .cover-title { font-size: 50px; font-weight: bold; z-index: 5; text-shadow: 0 4px 20px #000; }
@@ -34,19 +59,16 @@
         .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
         .episode-card span { padding: 10px; font-size: 12px; font-weight: 500; background: rgba(0,0,0,0.6); width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* PLAYER & PLAYER BAR */
+        /* === PLAYER & UI === */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
-        
         #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 60px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); transition: opacity 0.5s; opacity: 0; }
         .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; margin-bottom: 10px; }
-        #progress-bar { width: 0%; height: 100%; background: #f1c40f; transition: width 0.1s; }
-        .time-info { font-size: 18px; font-weight: bold; text-align: right; text-shadow: 0 2px 4px #000; }
-        
+        #progress-bar { width: 0%; height: 100%; background: #f1c40f; }
+        .time-info { font-size: 18px; font-weight: bold; text-align: right; }
         #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; display: none; }
         .spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.1); border-top: 5px solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-
         #error-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 20000; display: none; justify-content: center; align-items: center; }
         .popup-content { background: #1a1a1a; padding: 30px; border-radius: 15px; border: 2px solid #e50914; text-align: center; }
     </style>
@@ -57,23 +79,35 @@
     <source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg">
 </audio>
 
-<div id="splash"><div class="splash-logo"><span>G</span><span>i</span><span>B</span><span>i</span><span>T</span><span>V</span></div></div>
-
-<div id="error-popup">
-    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>Bu bölüm şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
-</div>
-
-<div id="video-player-container">
-    <div id="loading-screen"><div class="spinner"></div></div>
-    <video id="main-video" playsinline></video>
-    <div id="player-ui">
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <div class="time-info"><span id="curr-time">00:00</span> / <span id="total-time">00:00</span></div>
+<div id="splash">
+    <div class="splash-logo">
+        <span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span>
     </div>
 </div>
 
+<nav id="sidebar">
+    <div class="menu-items">
+        <div class="menu-item" tabindex="0" id="nav-diziler">
+            <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/series.png" class="menu-icon">
+            <span class="menu-text">Diziler</span>
+        </div>
+        <div class="menu-item" tabindex="0" id="nav-filmler">
+            <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/movies.png" class="menu-icon">
+            <span class="menu-text">Filmler</span>
+        </div>
+        <div class="menu-item" tabindex="0" id="nav-canli">
+            <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/tv.png" class="menu-icon">
+            <span class="menu-text">Canlı TV</span>
+        </div>
+    </div>
+    <div class="menu-item settings-item" tabindex="0" id="nav-ayarlar">
+        <img src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/settings.png" class="menu-icon">
+        <span class="menu-text">Ayarlar</span>
+    </div>
+</nav>
+
 <div id="main-app">
-    <div class="hero"><div class="cover-title">EdmorTv</div></div>
+    <div class="hero"><div class="cover-title">GiBiTV</div></div>
     <div class="ui-footer">
         <div class="seasons">
             <button class="season-btn" data-season="1">Sezon 1</button>
@@ -85,6 +119,19 @@
         </div>
         <div id="episodes" class="episodes"></div>
     </div>
+</div>
+
+<div id="video-player-container">
+    <div id="loading-screen"><div class="spinner"></div></div>
+    <video id="main-video" playsinline></video>
+    <div id="player-ui">
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <div class="time-info"><span id="curr-time">00:00</span> / <span id="total-time">00:00</span></div>
+    </div>
+</div>
+
+<div id="error-popup">
+    <div class="popup-content"><h2>TEKNİK SORUN</h2><p>Bu içerik şu anda bakımdadır.</p><button id="close-popup-btn" style="margin-top:20px; padding:10px 30px;">Geri Dön</button></div>
 </div>
 
 <script>
@@ -143,11 +190,11 @@
             { name: "1. Sinek", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E1%20-%20Sinek.mp4" },
             { name: "2. Kahır", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E2%20-%20Kah%C4%B1r.mp4" },
             { name: "3. Şako", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E3%20-%20%C5%9Eako%20Bosphorus.mp4" },
-            { name: "4. Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
+            { name: "4. Yokluk", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E4%20-%20Yokluk.mp4" },
             { name: "5. Böbrek Taşı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E5%20-%20B%C3%96BREK%20TA%C5%9EI.mp4" },
             { name: "6. Aşağılık Adam", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/6.mp4" },
-            { name: "7. Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
-            { name: "8. Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
+            { name: "7. Leopar", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E7%20-%20Leopar.mp4" },
+            { name: "8. Şadan", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20S5E8%20-%20%C5%9Eadan.mp4" },
             { name: "9. İrade", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E9%20-%20%C4%B0rade.mp4" },
             { name: "10. Geleceğin Habercisi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20S5E10.mp4" },
             { name: "11. Kenan Ticaret", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%205/Gibi%20SE11-%20KENAN%20T%C4%B0CARET.mp4" },
@@ -156,15 +203,15 @@
         ],
         6: [
             { name: "1. Waffle", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0601%20-%20Waffle.mp4" },
-            { name: "2. Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/2.mp4" },
-            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00603.mp4" },
-            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00604.mp4" },
-            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00605.mp4" },
-            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00606.mp4" },
-            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00607.mp4" },
-            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B00608.mp4" },
-            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6%C4%B0B%C4%B00609.mp4" },
-            { name: "10. İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/G%C4%B0B%C4%B0S0610.mp4" },
+            { name: "2. Mikrodalga", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/Gibi0602.mp4" },
+            { name: "3. Girls Night Out", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00603.mp4" },
+            { name: "4. Metin", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00604.mp4" },
+            { name: "5. Nomen est Omen", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00605.mp4" },
+            { name: "6. Çağrı", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00606.mp4" },
+            { name: "7. Gece Kaplanları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00607.mp4" },
+            { name: "8. Çöl Defnesi", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00608.mp4" },
+            { name: "9. Jumbo", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B00609.mp4" },
+            { name: "10. İyilik Sağlık", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0S0610.mp4" },
             { name: "11. Başkaları", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x11.mp4" },
             { name: "12. Yapılanlar 1", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x12.mp4" },
             { name: "13. Yapılanlar 2", url: "https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%206/6x13.mp4" }
@@ -183,13 +230,8 @@
     }
 
     function showUI() { pUi.style.opacity = 1; clearTimeout(uiTimer); uiTimer = setTimeout(() => { pUi.style.opacity = 0; }, 3000); }
-
     function notifyAndroid(isOpen) { if (window.AndroidBridge) { window.AndroidBridge.setVideoStatus(isOpen); } }
-
-    function closeVideo() {
-        vMain.pause(); vMain.src = ""; vCont.style.display = "none";
-        notifyAndroid(false); if(lastFocus) lastFocus.focus();
-    }
+    function closeVideo() { vMain.pause(); vMain.src = ""; vCont.style.display = "none"; notifyAndroid(false); if(lastFocus) lastFocus.focus(); }
 
     vMain.ontimeupdate = () => {
         let per = (vMain.currentTime / vMain.duration) * 100;
@@ -205,7 +247,6 @@
             const d = document.createElement("div"); d.className = "episode-card"; d.tabIndex = 0;
             d.innerHTML = `<span>${ep.name}</span>`;
             d.onclick = () => { 
-                if(!ep.url) { lastFocus = d; document.getElementById("error-popup").style.display = "flex"; document.getElementById("close-popup-btn").focus(); return; }
                 lastFocus = d; vCont.style.display = "flex"; loader.style.display = "flex";
                 vMain.src = ep.url; vMain.load(); notifyAndroid(true);
                 vMain.onplaying = () => { loader.style.display = "none"; showUI(); };
@@ -227,34 +268,48 @@
     window.onload = () => { 
         loadSeason(1); 
         sBtns[0].classList.add("active"); 
-        
-        setTimeout(() => {
-            const audio = document.getElementById("login-sound");
-            audio.play().catch(e => console.log("Ses hatası:", e));
-        }, 200);
-
+        setTimeout(() => { document.getElementById("login-sound").play().catch(e => {}); }, 200);
         setTimeout(() => sBtns[0].focus(), 4600); 
     };
 
     document.addEventListener('keydown', (e) => {
+        const focused = document.activeElement;
+        
         if (vCont.style.display === "flex") {
             showUI();
             switch(e.keyCode) {
-                case 13: e.preventDefault(); if(vMain.paused) vMain.play(); else vMain.pause(); break;
+                case 13: e.preventDefault(); vMain.paused ? vMain.play() : vMain.pause(); break;
                 case 39: vMain.currentTime += 10; break;
                 case 37: vMain.currentTime -= 10; break;
                 case 8: case 27: closeVideo(); e.preventDefault(); break;
             }
-        } else if (document.getElementById("error-popup").style.display === "flex") {
-            if (e.keyCode === 8 || e.keyCode === 13) { document.getElementById("close-popup-btn").onclick(); e.preventDefault(); }
-        } else {
-            const f = document.activeElement;
-            if (f.classList.contains('season-btn') && e.keyCode === 40) { const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); }
-            else if (f.classList.contains('episode-card') && e.keyCode === 38) { document.querySelector('.season-btn.active').focus(); e.preventDefault(); }
+            return;
+        }
+
+        if (e.keyCode === 37) {
+            if (!focused.classList.contains('menu-item')) {
+                lastFocus = focused;
+                document.getElementById('nav-diziler').focus();
+            }
+        } else if (e.keyCode === 39) {
+            if (focused.classList.contains('menu-item')) {
+                if(lastFocus) lastFocus.focus();
+                else document.querySelector('.season-btn.active').focus();
+            }
+        } else if (e.keyCode === 13 && focused.classList.contains('menu-item')) {
+            if(focused.id !== 'nav-diziler') {
+                lastFocus = focused;
+                document.getElementById("error-popup").style.display = "flex";
+                document.getElementById("close-popup-btn").focus();
+            }
+        }
+
+        if (focused.classList.contains('season-btn') && e.keyCode === 40) { 
+            const e1 = document.querySelector('.episode-card'); if(e1) e1.focus(); e.preventDefault(); 
+        } else if (focused.classList.contains('episode-card') && e.keyCode === 38) { 
+            document.querySelector('.season-btn.active').focus(); e.preventDefault(); 
         }
     });
 </script>
 </body>
 </html>
-
-
