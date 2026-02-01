@@ -27,10 +27,10 @@
 
         .content-area { flex: 1; display: flex; flex-direction: column; padding: 0 3vw 2vh 3vw; z-index: 10; justify-content: center; }
 
-        /* SEZONLAR (KENARLIK PAYI ARTIRILDI) */
+        /* SEZONLAR */
         .seasons-row { 
             display: flex; gap: 1vw; margin-bottom: 2.5vh; overflow-x: auto; 
-            padding: 1.5vh 2vw; /* Yatay padding artırıldı, kesilme engellendi */
+            padding: 1.5vh 2vw; 
             scrollbar-width: none; 
         }
         .season-btn { 
@@ -40,14 +40,14 @@
         }
         .season-btn:focus { 
             border-color: #f1c40f; color: #fff; background: #222; transform: scale(1.05); 
-            box-shadow: 0 0 2vh rgba(241, 196, 15, 0.6); /* Gölge biraz daha büyüdü */
+            box-shadow: 0 0 2vh rgba(241, 196, 15, 0.6); 
         }
         .season-btn.active { background: #f1c40f; color: #000; border-color: #f1c40f; }
 
-        /* BÖLÜMLER (KENARLIK PAYI ARTIRILDI) */
+        /* BÖLÜMLER */
         .episodes-row { 
             display: flex; gap: 1.5vw; overflow-x: auto; 
-            padding: 2.5vh 2vw; /* Yatay padding artırıldı, kesilme engellendi */
+            padding: 2.5vh 2vw; 
             scrollbar-width: none; 
         }
         .episode-card { 
@@ -58,16 +58,34 @@
         }
         .episode-card:focus { 
             border-color: #f1c40f; transform: scale(1.12); z-index: 20; 
-            box-shadow: 0 1.5vh 4vh rgba(241, 196, 15, 0.5); /* Gölge güçlendirildi */
+            box-shadow: 0 1.5vh 4vh rgba(241, 196, 15, 0.5); 
         }
         .episode-name { width: 100%; padding: 1vh; background: rgba(0,0,0,0.85); color: #fff; font-size: 1.4vh; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* PLAYER UI */
+        /* PLAYER UI & LOADING */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
-        #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; }
+        
+        #loading-screen { 
+            position: absolute; inset: 0; background: #000; 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            z-index: 10001; 
+        }
         .spinner { width: 7vh; height: 7vh; border: 0.7vh solid rgba(255,255,255,0.1); border-top: 0.7vh solid #f1c40f; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* YAVAŞ YÜKLENME UYARISI */
+        #timeout-message {
+            margin-top: 3vh;
+            color: #f1c40f;
+            font-size: 2.2vh;
+            font-weight: bold;
+            text-align: center;
+            display: none; /* Başlangıçta gizli */
+            animation: fadeIn 0.5s ease;
+            text-shadow: 0 0 10px rgba(241, 196, 15, 0.3);
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 4vh 5vw; background: linear-gradient(transparent, rgba(0,0,0,0.95)); transition: opacity 0.5s; opacity: 0; }
         .progress-bar-bg { width: 100%; height: 0.8vh; background: rgba(255,255,255,0.2); border-radius: 0.4vh; overflow: hidden; margin-bottom: 2vh; }
@@ -110,7 +128,10 @@
 </div>
 
 <div id="video-player-container">
-    <div id="loading-screen"><div class="spinner"></div></div>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <div id="timeout-message">İçeriğin açılması çok zaman aldı,<br>lütfen çözüm için iletişime geçin.</div>
+    </div>
     <video id="main-video" playsinline></video>
     <div id="player-ui">
         <div class="progress-bar-bg"><div id="progress-fill"></div></div>
@@ -137,7 +158,7 @@
 </div>
 
 <script>
-    // --- TAM SEZON VERİSİ (1-6) ---
+    // --- TAM SEZON VERİSİ (1-6 EKSİKSİZ) ---
     const allEpisodes = {
         1: [
             {n:"1. Kokariç", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4"},
@@ -224,41 +245,49 @@
     const vCont = document.getElementById("video-player-container"), vMain = document.getElementById("main-video"), loader = document.getElementById("loading-screen");
     const pUI = document.getElementById("player-ui"), pFill = document.getElementById("progress-fill"), imgPlay = document.getElementById("img-play");
     const curT = document.getElementById("cur-time"), durT = document.getElementById("dur-time"), popup = document.getElementById("exit-popup");
-    let lastFocus, uiTimer;
+    const timeoutMsg = document.getElementById("timeout-message");
+    let lastFocus, uiTimer, loadTimer;
 
     function formatTime(s) { if(!s) return "00:00"; let m=Math.floor(s/60), sec=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sec<10?"0"+sec:sec); }
     function showUI() { pUI.style.opacity=1; clearTimeout(uiTimer); uiTimer=setTimeout(()=>pUI.style.opacity=0, 4000); }
     
-    // --- FOCUS MERKEZLEME ---
     function forceScroll(el) { el.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center'}); }
 
-    // --- PLAYER AÇMA & HISTORY TRAP ---
     function openPlayer(url) {
-        vCont.style.display="flex"; loader.style.display="flex"; 
+        vCont.style.display="flex"; loader.style.display="flex"; timeoutMsg.style.display="none";
+        
+        // ZAMANLAYICI BAŞLAT (4 SANİYE)
+        clearTimeout(loadTimer);
+        loadTimer = setTimeout(() => {
+            if(loader.style.display !== "none") {
+                timeoutMsg.style.display="block";
+            }
+        }, 4000);
+
         vMain.src=url; vMain.load(); vMain.play(); 
         document.getElementById("btn-play").focus();
         
-        // 1. Tarayıcı geçmişine sahte bir "oynatıcı" sayfası ekle
+        // HISTORY TRAP: URL'e sahte ekleme yap
         history.pushState({page: 'player'}, "Player", "#player");
     }
 
-    // --- PLAYER KAPATMA ---
     function closePlayer() {
         vMain.pause(); vMain.src=""; vCont.style.display="none"; 
+        clearTimeout(loadTimer); timeoutMsg.style.display="none";
         if(lastFocus) lastFocus.focus();
         
-        // Eğer URL'de #player kalmışsa geri alarak temizle
+        // URL'de #player varsa temizle
         if(location.hash === "#player") {
             history.back(); 
         }
     }
 
-    // --- POPSTATE (GERİ TUŞU YAKALAYICI) ---
-    // Kumandadan "Geri" tuşuna basıldığında bu tetiklenir (Çünkü URL değişmiştir)
+    // TARAYICI GERİ GİTMEYE ÇALIŞIRSA (POPSTATE)
     window.addEventListener('popstate', function(event) {
         if (vCont.style.display === "flex") {
-            // Player açıksa kapat ama App kapanmasın
+            // Player açıksa kapat, uygulamayı kapatma
             vMain.pause(); vMain.src=""; vCont.style.display="none"; 
+            clearTimeout(loadTimer); timeoutMsg.style.display="none";
             if(lastFocus) lastFocus.focus();
         }
     });
@@ -274,7 +303,10 @@
         });
     }
 
-    vMain.onplaying = () => { loader.style.display="none"; imgPlay.src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png"; showUI(); };
+    vMain.onplaying = () => { 
+        loader.style.display="none"; timeoutMsg.style.display="none"; clearTimeout(loadTimer);
+        imgPlay.src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/pause.png"; showUI(); 
+    };
     vMain.onpause = () => imgPlay.src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/edmortv/play.png";
     vMain.ontimeupdate = () => { pFill.style.width = (vMain.currentTime/vMain.duration)*100+"%"; curT.innerText=formatTime(vMain.currentTime); durT.innerText=formatTime(vMain.duration); };
 
@@ -294,43 +326,48 @@
         loadSeason(1); sBtns[0].classList.add("active"); 
         setTimeout(()=>document.getElementById("login-sound").play().catch(e=>{}), 200); 
         setTimeout(()=>sBtns[0].focus(), 4600); 
-        // Başlangıç State
         history.replaceState({page: 'home'}, "Home", " ");
     };
 
-    // --- KEYDOWN ---
     window.addEventListener('keydown', (e) => {
         const isVideo = vCont.style.display === "flex";
         const isPopup = popup.style.display === "flex";
         const focused = document.activeElement;
 
-        // Player Navigasyon
+        // PLAYER KONTROL (Geri tuşu buraya girmez, popstate halleder)
         if (isVideo) {
             showUI();
             if (e.keyCode === 13 && !focused.classList.contains("ctrl-btn")) vMain.paused ? vMain.play() : vMain.pause();
             
-            if (focused.classList.contains("ctrl-btn")) {
+            if (!focused.classList.contains("ctrl-btn")) {
+                if (e.keyCode === 37) vMain.currentTime -= 10;
+                if (e.keyCode === 39) vMain.currentTime += 10;
+            } else {
                 if (e.keyCode === 37 && focused === document.getElementById("btn-play")) document.getElementById("btn-rew").focus();
                 if (e.keyCode === 39 && focused === document.getElementById("btn-play")) document.getElementById("btn-fwd").focus();
                 if (e.keyCode === 39 && focused === document.getElementById("btn-rew")) document.getElementById("btn-play").focus();
                 if (e.keyCode === 37 && focused === document.getElementById("btn-fwd")) document.getElementById("btn-play").focus();
-            } else {
-                if (e.keyCode === 37) vMain.currentTime -= 10;
-                if (e.keyCode === 39) vMain.currentTime += 10;
             }
-            // Geri tuşu burada yakalanmaz, popstate halleder.
-            // Sadece diğer tuşları (OK, Yönler) handle ediyoruz.
             return;
         }
 
-        // Geri Tuşu (Ana Menüde) -> Çıkış Onayı
+        // GERİ TUŞU -> POPUP ÇIKMADAN DİREKT KAPAT (POPUP İPTAL)
+        // Ama video açıksa popstate çalışır, buraya düşmez. 
+        // Buraya sadece video kapalıysa düşer.
         if (e.keyCode === 4 || e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
             if (isPopup) {
+                // Popup varsa kapat
                 popup.style.display="none"; 
                 if(lastFocus) lastFocus.focus();
                 e.preventDefault();
             } else {
-                // Burada direkt çıkmak yerine Popup açıyoruz (Sistem onayını kaldırdık ama kendi popupımız var)
+                // Çıkış onayı olmadan direkt kapat (Sistem onayını kaldırdık)
+                // Ama yine de yanlışlıkla çıkmasın diye kendi popupımızı kullanalım mı?
+                // "Uygulamadan çıkmak için sistem onayını kaldıralım" dedin.
+                // Eğer direkt kapanmasını istiyorsan alttaki satırı aç:
+                // window.AndroidBridge ? window.AndroidBridge.closeApp() : window.close();
+                
+                // Yok eğer sadece "Sistemin kendi UI'ı gelmesin, benim siyah popup gelsin" diyorsan:
                 lastFocus = focused;
                 popup.style.display="flex";
                 document.getElementById("exit-no").focus();
@@ -344,7 +381,7 @@
             return;
         }
 
-        // Ana Menü D-Pad
+        // ANA EKRAN NAVİGASYON
         if (focused.classList.contains("season-btn")) {
             if (e.keyCode === 39) { e.preventDefault(); focused.nextElementSibling?.focus(); }
             if (e.keyCode === 37) { e.preventDefault(); focused.previousElementSibling?.focus(); }
