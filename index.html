@@ -4,25 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Ana taşıyıcılar ve dikey uzama engeli */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
         html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
-        /* === SPLASH SCREEN (STABİLİZE EDİLDİ) === */
+        /* === SPLASH SCREEN (STABİL) === */
         #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; animation: forceHide 0.5s forwards; animation-delay: 4.5s; }
         .splash-logo { display: block; text-align: center; width: 100%; }
         .splash-logo span { font-size: 85px; font-weight: 900; color: #000; opacity: 0; display: inline-block; animation: glowBlack 1.2s forwards; }
-        
         @keyframes glowBlack { to { opacity: 1; } }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; } }
-        
-        /* Harf animasyon süreleri stabilize edildi */
-        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } 
-        .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
-        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } 
-        .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
-        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } 
-        .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
+        .splash-logo span:nth-child(1) { animation-delay: 0.2s; } .splash-logo span:nth-child(2) { animation-delay: 0.4s; }
+        .splash-logo span:nth-child(3) { animation-delay: 0.6s; } .splash-logo span:nth-child(4) { animation-delay: 0.8s; }
+        .splash-logo span:nth-child(5) { animation-delay: 1.0s; } .splash-logo span:nth-child(6) { animation-delay: 1.2s; }
         .splash-logo span:nth-child(7) { animation-delay: 1.4s; }
 
         /* === YAN MENÜ (SIDEBAR) === */
@@ -36,20 +29,17 @@
         #sidebar:focus-within .menu-text { opacity: 1; }
         .settings-item { margin-top: auto; margin-bottom: 30px; }
 
-        /* === ANA İÇERİK ALANI (LAYOUT FIX) === */
+        /* === ANA İÇERİK === */
         #main-app { position: fixed; left: 80px; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; transition: filter 0.3s; background: #000; }
         #sidebar:focus-within ~ #main-app { filter: brightness(0.3); pointer-events: none; }
-
         .hero { position: relative; width: 100%; height: 60vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 20px 60px; }
         .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,1) 100%); }
         .cover-title { font-size: 50px; font-weight: bold; z-index: 5; text-shadow: 0 4px 20px #000; }
-
         .ui-footer { width: 100%; height: 40vh; background: #000; z-index: 10; display: flex; flex-direction: column; }
         .seasons { display: flex; gap: 10px; padding: 10px 60px; }
         .season-btn { background: #1a1a1a; padding: 6px 14px; border-radius: 6px; font-size: 14px; color: #ccc; border: 3px solid transparent; cursor: pointer; }
         .season-btn:focus { border-color: #f1c40f; color: #fff; transform: scale(1.05); }
         .season-btn.active { color: #f1c40f; border-bottom: 3px solid #f1c40f; }
-
         .episodes { display: flex; gap: 15px; padding: 10px 60px; overflow-x: auto; scroll-behavior: smooth; scrollbar-width: none; }
         .episode-card { min-width: 200px; height: 110px; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: flex-end; flex-shrink: 0; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; cursor: pointer; }
         .episode-card:focus { box-shadow: inset 0 0 0 4px #f1c40f; transform: scale(1.08); z-index: 20; }
@@ -93,7 +83,7 @@
 <div id="main-app">
     <div class="hero"><div class="cover-title">GiBiTV</div></div>
     <div class="ui-footer">
-        <div class="seasons">
+        <div id="seasons-container" class="seasons">
             <button class="season-btn" data-season="1">Sezon 1</button>
             <button class="season-btn" data-season="2">Sezon 2</button>
             <button class="season-btn" data-season="3">Sezon 3</button>
@@ -258,6 +248,7 @@
 
     document.addEventListener('keydown', (e) => {
         const focused = document.activeElement;
+        
         if (vCont.style.display === "flex") {
             showUI();
             switch(e.keyCode) {
@@ -269,12 +260,26 @@
             return;
         }
 
-        if (e.keyCode === 37) { // SOL
-            if (!focused.classList.contains('menu-item')) {
-                lastFocus = focused;
-                document.getElementById('nav-diziler').focus();
+        if (e.keyCode === 37) { // SOL tuşu
+            if (focused.classList.contains('menu-item')) return; // Zaten menüdeysek bir şey yapma
+
+            // SEZON BUTONLARINDA SOL KONTROLÜ
+            if (focused.classList.contains('season-btn')) {
+                const sBtnsArray = Array.from(document.querySelectorAll('.season-btn'));
+                if (focused === sBtnsArray[0]) { // Eğer ilk sezondaysak menüyü aç
+                    lastFocus = focused;
+                    document.getElementById('nav-diziler').focus();
+                }
             }
-        } else if (e.keyCode === 39) { // SAĞ
+            // BÖLÜM KARTLARINDA SOL KONTROLÜ
+            else if (focused.classList.contains('episode-card')) {
+                const epCards = Array.from(document.querySelectorAll('.episode-card'));
+                if (focused === epCards[0]) { // Eğer ilk karttaysak menüyü aç
+                    lastFocus = focused;
+                    document.getElementById('nav-diziler').focus();
+                }
+            }
+        } else if (e.keyCode === 39) { // SAĞ tuşu
             if (focused.classList.contains('menu-item')) {
                 if(lastFocus) lastFocus.focus();
                 else document.querySelector('.season-btn.active').focus();
