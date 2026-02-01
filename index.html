@@ -5,72 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EDMORTV - GİBİ FULL</title>
     <style>
-        /* === TV TASARIM VE ODAK SİSTEMİ === */
         * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
-        html, body { 
-            background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; 
-            width: 100vw; height: 100vh; overflow: hidden; user-select: none;
-        }
+        html, body { background: #000; color: #fff; font-family: 'Segoe UI', sans-serif; width: 100vw; height: 100vh; overflow: hidden; user-select: none; }
 
-        /* SPLASH SCREEN (SARI PARLAMA) */
-        #splash { 
-            position: fixed; inset: 0; background: #f1c40f; z-index: 9999; 
-            display: flex; justify-content: center; align-items: center; 
-            pointer-events: none; animation: forceHide 0.5s forwards 4.5s; 
-        }
-        .splash-logo span { 
-            font-size: 8vw; font-weight: 900; color: #000; opacity: 0; 
-            display: inline-block; animation: glowBlack 1.2s forwards; 
-            text-shadow: 0 0 20px rgba(0,0,0,0.4);
-        }
+        /* SPLASH */
+        #splash { position: fixed; inset: 0; background: #f1c40f; z-index: 9999; display: flex; justify-content: center; align-items: center; pointer-events: none; animation: forceHide 0.5s forwards 4.5s; }
+        .splash-logo span { font-size: 8vw; font-weight: 900; color: #000; opacity: 0; display: inline-block; animation: glowBlack 1.2s forwards; text-shadow: 0 0 20px rgba(0,0,0,0.3); }
         @keyframes glowBlack { to { opacity: 1; } }
         @keyframes forceHide { to { opacity: 0; visibility: hidden; } }
-        .splash-logo span:nth-child(n) { animation-delay: calc(var(--i) * 0.2s); }
 
-        /* ANA ARAYÜZ */
+        /* ANA EKRAN */
         #main-app { position: fixed; inset: 0; display: flex; flex-direction: column; background: #000; }
-        .hero { 
-            position: relative; width: 100%; height: 40vh; 
-            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover no-repeat; 
-            display: flex; align-items: flex-end; padding: 2vh 5vw;
-        }
+        .hero { position: relative; width: 100%; height: 40vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/kapak.png") center/cover; display: flex; align-items: flex-end; padding: 2vh 5vw; }
         .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 20%, #000 100%); }
         .cover-title { font-size: 5vw; font-weight: 900; z-index: 5; text-shadow: 0 4px 20px #000; color: #f1c40f; }
 
-        .content-area { flex: 1; display: flex; flex-direction: column; padding: 0 5vw 2vh 5vw; z-index: 10; justify-content: center; }
-
-        /* SEZONLAR (SARI KENARLIKLI ODAK) */
-        .seasons-row { display: flex; gap: 1vw; margin-bottom: 2.5vh; overflow-x: auto; padding: 1vh 0; scrollbar-width: none; }
-        .season-btn { 
-            background: #111; color: #888; height: 5.5vh; padding: 0 2.5vw; border-radius: 6vh; 
-            font-size: 1.8vh; font-weight: 700; border: 3px solid transparent; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s;
-        }
-        .season-btn:focus { 
-            border-color: #f1c40f; color: #fff; background: #222; transform: scale(1.05); 
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
-        }
+        /* SEZONLAR (SARI ODAK) */
+        .seasons-row { display: flex; gap: 1vw; margin: 3vh 5vw; overflow-x: auto; scrollbar-width: none; }
+        .season-btn { background: #111; color: #888; height: 5.5vh; padding: 0 2.5vw; border-radius: 6vh; font-size: 1.8vh; font-weight: 700; border: 3px solid transparent; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+        .season-btn:focus { border-color: #f1c40f; color: #fff; transform: scale(1.05); box-shadow: 0 0 15px rgba(241, 196, 15, 0.5); }
         .season-btn.active { background: #f1c40f; color: #000; border-color: #f1c40f; }
 
-        /* BÖLÜMLER (SARI KENARLIKLI ODAK) */
-        .episodes-row { display: flex; gap: 1.5vw; overflow-x: auto; padding: 1.5vh 0; scrollbar-width: none; }
-        .episode-card { 
-            min-width: 16vw; height: 17vh; border-radius: 1.2vh; 
-            background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; 
-            border: 4px solid transparent; display: flex; align-items: flex-end; 
-            flex-shrink: 0; overflow: hidden; transition: 0.2s;
-        }
-        .episode-card:focus { 
-            border-color: #f1c40f; transform: scale(1.1); z-index: 20; 
-            box-shadow: 0 1vh 3vh rgba(241, 196, 15, 0.4); 
-        }
-        .episode-name { 
-            width: 100%; padding: 1vh; background: rgba(0,0,0,0.85); 
-            color: #fff; font-size: 1.4vh; font-weight: 600; text-align: center;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        /* BÖLÜMLER (SARI ODAK) */
+        .episodes-row { display: flex; gap: 1.5vw; overflow-x: auto; padding: 2vh 5vw; scrollbar-width: none; }
+        .episode-card { min-width: 16vw; height: 17vh; border-radius: 1.2vh; background: url("https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/Posterler/gibitvcover.png") center/cover; border: 0.4vh solid transparent; display: flex; align-items: flex-end; flex-shrink: 0; overflow: hidden; transition: 0.2s; }
+        .episode-card:focus { border-color: #f1c40f; transform: scale(1.1); z-index: 20; box-shadow: 0 1vh 3vh rgba(241, 196, 15, 0.4); }
+        .episode-name { width: 100%; padding: 1vh; background: rgba(0,0,0,0.85); color: #fff; font-size: 1.4vh; font-weight: 600; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* PLAYER & SARI BUTON ODAKLARI */
+        /* PLAYER */
         #video-player-container { position: fixed; inset: 0; background: #000; z-index: 10000; display: none; }
         video { width: 100%; height: 100%; }
         #loading-screen { position: absolute; inset: 0; background: #000; display: flex; justify-content: center; align-items: center; z-index: 10001; }
@@ -80,39 +42,27 @@
         #player-ui { position: absolute; bottom: 0; left: 0; right: 0; padding: 4vh 5vw; background: linear-gradient(transparent, rgba(0,0,0,0.95)); transition: opacity 0.5s; opacity: 0; }
         .progress-bar-bg { width: 100%; height: 0.8vh; background: rgba(255,255,255,0.2); border-radius: 0.4vh; overflow: hidden; margin-bottom: 2vh; }
         #progress-fill { width: 0%; height: 100%; background: #f1c40f; }
-        
         .controls-wrapper { display: flex; align-items: center; justify-content: center; position: relative; }
         .buttons-group { display: flex; gap: 3vw; }
-        
-        .ctrl-btn { 
-            background: transparent; border: 4px solid transparent; padding: 0.5vh; 
-            border-radius: 50%; outline: none; transition: 0.2s;
-        }
+        .ctrl-btn { background: transparent; border: 4px solid transparent; padding: 0.5vh; border-radius: 50%; outline: none; transition: 0.2s; }
         .ctrl-btn img { width: 5vh; height: 5vh; }
-        .ctrl-btn:focus { 
-            border-color: #f1c40f; background: rgba(241, 196, 15, 0.2); 
-            transform: scale(1.2); box-shadow: 0 0 20px rgba(241, 196, 15, 0.6);
-        }
+        .ctrl-btn:focus { border-color: #f1c40f; transform: scale(1.2); box-shadow: 0 0 20px rgba(241, 196, 15, 0.6); }
         .time-display { position: absolute; right: 0; font-size: 2.2vh; font-weight: bold; font-family: monospace; }
 
         /* EXIT POPUP */
         #exit-popup { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 20000; display: none; justify-content: center; align-items: center; }
         .popup-box { background: #111; padding: 5vh 5vw; border-radius: 2vh; border: 3px solid #f1c40f; text-align: center; }
-        .p-btn { padding: 1.5vh 3vw; border-radius: 1vh; border: 3px solid transparent; font-size: 2.2vh; font-weight: bold; cursor: pointer; margin: 0 1vw; }
+        .p-btn { padding: 1.5vh 3vw; border-radius: 1vh; border: none; font-size: 2.2vh; font-weight: bold; cursor: pointer; margin: 0 1vw; }
         .btn-yes { background: #f1c40f; color: #000; }
         .btn-no { background: #333; color: #fff; }
-        .p-btn:focus { border-color: #fff; transform: scale(1.1); box-shadow: 0 0 15px #fff; }
+        .p-btn:focus { outline: 0.4vh solid #fff; transform: scale(1.1); }
     </style>
 </head>
 <body>
 
 <audio id="login-sound"><source src="https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/sounds/gibitvlogin.mp3" type="audio/mpeg"></audio>
 
-<div id="splash">
-    <div class="splash-logo">
-        <span style="--i:1">E</span><span style="--i:2">D</span><span style="--i:3">M</span><span style="--i:4">O</span><span style="--i:5">R</span><span style="--i:6">T</span><span style="--i:7">V</span>
-    </div>
-</div>
+<div id="splash"><div class="splash-logo"><span>E</span><span>D</span><span>M</span><span>O</span><span>R</span><span>T</span><span>V</span></div></div>
 
 <div id="main-app">
     <div class="hero"><div class="cover-title">GİBİ</div></div>
@@ -157,7 +107,6 @@
 </div>
 
 <script>
-    // --- VERİTABANI: 1-6 TAM EKSİKSİZ ---
     const allEpisodes = {
         1: [
             {n:"1. Kokariç", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/1%20-%20Kokari%C3%A7.mp4"},
@@ -167,30 +116,30 @@
             {n:"5. Mentor", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/5.mp4"},
             {n:"6. Karanlık Güç", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/6.mp4"},
             {n:"7. İkinci Yol", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/7.mp4"},
-            {n:"8. Badana", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8.mp4"},
+            {n:"8. Badana", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/8%20-%20Badana.mp4"},
             {n:"9. Ayırtma", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/9.mp4"},
             {n:"10. Kan Parası", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/10.mp4"},
             {n:"11. Banyo", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/11.mp4"},
             {n:"12. Atın Bulunuşu", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%201/12.mp4"}
         ],
         2: [
-            {n:"1. Vücutçu Yalvaç", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/1.mp4"},
+            {n:"1. Vücutçu", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/1.mp4"},
             {n:"2. Kuki", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/2.mp4"},
             {n:"3. Bej", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/3.mp4"},
             {n:"4. Sokak Röportajı", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/4.mp4"},
-            {n:"5. Çaça ve Cosplay", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/5.mp4"},
-            {n:"6. İçi Dışı Bir", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/6.mp4"},
+            {n:"5. Çaça", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/5.mp4"},
+            {n:"6. İçi Dışı", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/6.mp4"},
             {n:"7. Gelin Başı", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/7.mp4"},
-            {n:"8. Resimdeki Ünlü", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/8.mp4"},
-            {n:"9. Eşref Hidayet", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/9.mp4"},
-            {n:"10. Vita Brevis", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/10.mp4"}
+            {n:"8. Ünlü", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/8.mp4"},
+            {n:"9. Eşref", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/9.mp4"},
+            {n:"10. Vita", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%202/10.mp4"}
         ],
         3: [
-            {n:"1. Sarışın ve Kotlu", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.mp4"},
+            {n:"1. Sarışın", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/1.mp4"},
             {n:"2. Keskin Nişancı", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/2.mp4"},
             {n:"3. Büfe", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/3.mp4"},
             {n:"4. Sınıfsal Veda", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/4.mp4"},
-            {n:"5. Mazbut Bir Hayat", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.mp4"},
+            {n:"5. Mazbut", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/5.mp4"},
             {n:"6. Ghosting", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/6.mp4"},
             {n:"7. Teşekkürler", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/7.mp4"},
             {n:"8. Gülnuray", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%203/8.mp4"},
@@ -200,13 +149,13 @@
         4: [
             {n:"1. Övgü", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/1.mp4"},
             {n:"2. Bin", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/2.mp4"},
-            {n:"3. Orta Yaş Krizi", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.mp4"},
+            {n:"3. Orta Yaş", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/3.mp4"},
             {n:"4. Kafa Nakli", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/4.mp4"},
             {n:"5. Patern", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/5.mp4"},
             {n:"6. 165", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/6.mp4"},
-            {n:"7. Dönen Tekme", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.mp4"},
+            {n:"7. Tekme", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/7.mp4"},
             {n:"8. Defter", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/8.mp4"},
-            {n:"9. Dirty Talk", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.mp4"},
+            {n:"9. Talk", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/9.mp4"},
             {n:"10. Eğitim Öğretim", u:"https://filedn.eu/liPnBWWQgeQVeGgdPoPnl8S/G%C4%B0B%C4%B0%20SEZON%204/10.mp4"}
         ],
         5: [
@@ -256,11 +205,7 @@
             const d = document.createElement("div"); d.className="episode-card"; d.tabIndex=0;
             d.innerHTML = `<div class="episode-name">${ep.n}</div>`;
             d.onfocus = () => forceScroll(d);
-            d.onclick = () => { 
-                lastFocus=d; vCont.style.display="flex"; loader.style.display="flex"; 
-                vMain.src=ep.u; vMain.load(); vMain.play(); 
-                document.getElementById("btn-play").focus(); 
-            };
+            d.onclick = () => { lastFocus=d; vCont.style.display="flex"; loader.style.display="flex"; vMain.src=ep.u; vMain.load(); vMain.play(); document.getElementById("btn-play").focus(); };
             epList.appendChild(d);
         });
     }
@@ -272,7 +217,7 @@
     document.getElementById("btn-play").onclick = () => vMain.paused ? vMain.play() : vMain.pause();
     document.getElementById("btn-rew").onclick = () => vMain.currentTime -= 10;
     document.getElementById("btn-fwd").onclick = () => vMain.currentTime += 10;
-    document.getElementById("exit-no").onclick = () => { popup.style.display="none"; if(lastFocus) lastFocus.focus(); };
+    document.getElementById("exit-no").onclick = () => { popup.style.display="none"; lastFocus.focus(); };
     document.getElementById("exit-yes").onclick = () => window.AndroidBridge ? window.AndroidBridge.closeApp() : window.close();
 
     const sBtns = document.querySelectorAll(".season-btn");
@@ -281,47 +226,44 @@
         btn.onclick = () => { sBtns.forEach(b=>b.classList.remove("active")); btn.classList.add("active"); loadSeason(btn.dataset.s); };
     });
 
-    window.onload = () => { 
-        loadSeason(1); 
-        sBtns[0].classList.add("active"); 
-        setTimeout(()=>document.getElementById("login-sound").play().catch(e=>{}), 200); 
-        setTimeout(()=>sBtns[0].focus(), 4600); 
-    };
+    window.onload = () => { loadSeason(1); sBtns[0].classList.add("active"); setTimeout(()=>document.getElementById("login-sound").play().catch(e=>{}), 200); setTimeout(()=>sBtns[0].focus(), 4600); };
 
-    // --- ANDROID TV TUŞ KONTROLÜ (KESİN ÇÖZÜM) ---
+    // --- ANDROID TV BACK KEY CONSUME (Geri Tuşu Kesin Çözüm) ---
     window.addEventListener('keydown', (e) => {
         const isVideo = vCont.style.display === "flex";
         const isPopup = popup.style.display === "flex";
         const focused = document.activeElement;
 
-        // Geri Tuşu (KeyCodes: 4, 8, 27, 10009)
+        // Geri Tuşu Yakalama (KeyCode 4: Android Back, 8: Backspace, 27: ESC, 10009: Samsung)
         if (e.keyCode === 4 || e.keyCode === 8 || e.keyCode === 27 || e.keyCode === 10009) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
+            e.preventDefault(); // Varsayılan sistem işlemini durdur
+            e.stopImmediatePropagation(); // Olayın dışarı sızmasını engelle
 
             if (isVideo) {
                 // Video açıksa sadece videoyu kapat
                 vMain.pause(); vMain.src=""; vCont.style.display="none"; 
                 if(lastFocus) lastFocus.focus();
             } else if (isPopup) {
-                // Popup'ı kapat
+                // Popup açıksa sadece popupı kapat
                 popup.style.display="none"; 
                 if(lastFocus) lastFocus.focus();
             } else {
-                // Hiçbiri yoksa çıkış sor
+                // Hiçbiri yoksa çıkış sorusunu aç
                 lastFocus = focused;
                 popup.style.display="flex";
                 document.getElementById("exit-no").focus();
             }
-            return false;
+            return false; // Consume
         }
 
+        // POPUP KONTROL
         if (isPopup) {
             if (e.keyCode === 37) document.getElementById("exit-yes").focus();
             if (e.keyCode === 39) document.getElementById("exit-no").focus();
             return;
         }
 
+        // PLAYER KONTROL
         if (isVideo) {
             showUI();
             if (e.keyCode === 13 && !focused.classList.contains("ctrl-btn")) vMain.paused ? vMain.play() : vMain.pause();
@@ -337,7 +279,7 @@
             return;
         }
 
-        // DPAD NAVİGASYON
+        // ANA EKRAN NAVİGASYON
         if (focused.classList.contains("season-btn")) {
             if (e.keyCode === 39) { e.preventDefault(); focused.nextElementSibling?.focus(); }
             if (e.keyCode === 37) { e.preventDefault(); focused.previousElementSibling?.focus(); }
